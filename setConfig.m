@@ -3,6 +3,13 @@ rootProj='/home/s1858467/BRICIA/jbernal_PhD/';
 % root='U:\Datastore\CMVM\scs\groups\BRICIA\';
 % rootProj='U:\Datastore\CMVM\scs\groups\BRICIA\jbernal_PhD\';
 
+addpath('Artefacts');
+addpath('Compensation');
+addpath('Evaluation');
+addpath('HRModule');
+addpath('LRModule');
+addpath('Utils');
+
 addpath([rootProj 'Tools', filesep, 'spm12']);
 addpath([rootProj 'Software_utils', filesep, 'BRIClib']);
 addpath([rootProj 'Software_utils', filesep, 'NIFTI']);

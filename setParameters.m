@@ -50,7 +50,6 @@ LRes_mm = FOV_mm./NDes;
 
 %%Input parameters
 seg_fname = ['input', filesep, 'sub-S03_ses-SES01_anat_sub-S03_ses-SES01_run-02_T1w_seg_wmhrsl.nii'];
-dataset = {'MSSB330','0101761104','19438','19547'};
 
 ref_seg_fname = sprintf(ref_seg_fname_pattern, dataset{1});
 ref_enh_fname = sprintf(ref_enh_fname_pattern, dataset{1});
