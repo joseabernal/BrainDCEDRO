@@ -1,4 +1,4 @@
-function [espai_k_out,SNR_SignalNoiseIndependent]=add_awgnoise(espai_k_in,SignalToNoiseRatio)
+function [espai_k_out]=add_awgnoise(espai_k_in,SignalToNoiseRatio)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %   MODULE:     add_awgnoise.m
@@ -52,15 +52,8 @@ UnbiasedEstStDeviationSignal=sqrt( (1/(NumberComponents-1)) * sum(sum(sum(abs(es
 StdDeviationNoise=UnbiasedEstStDeviationSignal/(10^(SignalToNoiseRatio/20));
 
 % Additive White Gaussian Noise
-%
 Noise=StdDeviationNoise*randn(size(espai_k_in(:,:,:)));
-%
-AverageNoise=(1/NumberComponents)*sum(sum(sum(Noise)));
-UnbiasedEstStDeviationNoise=sqrt( (1/(NumberComponents-1)) * sum(sum(sum(abs(Noise-AverageNoise).^2 ))));
 
 % I add the noise to the frame (in k-space domain)
 espai_k_out(:,:,:)=espai_k_in(:,:,:)+Noise;
-
-SNR_SignalNoiseIndependent=20*log10( UnbiasedEstStDeviationSignal/UnbiasedEstStDeviationNoise );
-
 end
