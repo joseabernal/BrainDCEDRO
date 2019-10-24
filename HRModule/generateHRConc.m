@@ -3,13 +3,19 @@ function HR_Ct_mM = generateHRConc(HR_tissue_map, vP, PS_perMin, Cp_AIF_mM, NTru
     %%Create high resolution parameter images
     HR_vP = vP(HR_tissue_map);
     HR_PS_perMin = PS_perMin(HR_tissue_map);
+    
+    HR_vP = reshape(HR_vP, [numel(HR_vP), 1]);
+    HR_PS_perMin = reshape(HR_PS_perMin, [numel(HR_PS_perMin), 1]);
 
     %%Generate high resolution 4D concentration time series
-%     Patlak_params = struct('vP', HR_vP, 'PS_perMin', HR_PS_perMin);
-%     [HR_Ct_mM, ~] = DCEFunc_PKP2Conc(t_res_s, Cp_AIF_mM, Patlak_params, 'Patlak', []);
+    batch_size = 10e6;
+    HR_Ct_mM = zeros([prod(NTrue), NFrames]);
+    for batch_start = 1:batch_size:prod(NTrue)
+        elem_in_batch = batch_start:min(batch_start+batch_size-1, prod(NTrue));
+        Patlak_params = struct('vP', HR_vP(elem_in_batch), 'PS_perMin', HR_PS_perMin(elem_in_batch));
+        [HR_Ct_mM(elem_in_batch, :), ~] = DCEFunc_PKP2Conc(t_res_s, Cp_AIF_mM, Patlak_params, 'Patlak', []);
+    end
 
-    HR_Ct_mM = reshape(HR_vP, [prod(NTrue), 1]) * Cp_AIF_mM' + reshape(HR_PS_perMin, [prod(NTrue), 1]) * cumsum(Cp_AIF_mM, 1)';
-    
     HR_Ct_mM = reshape(HR_Ct_mM, [NTrue, NFrames]);
 
     if save_HR_scans 

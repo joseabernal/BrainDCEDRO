@@ -2,7 +2,7 @@ clc;
 clear all;
 close all;
 
- % set configuration (paths)
+% set configuration (paths)
 setConfig;
 
 % set parameters
