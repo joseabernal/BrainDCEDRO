@@ -36,8 +36,6 @@ for experiment_idx = 1:length(probability_missing_lines)
 
         % mask low resolution to obtain signal of regions of interest
         LR_SI = LR_SI .* (LR_tissue_map ~= 1);
-
-        LR_SI = filterTimeKalman(LR_SI, LR_tissue_map, t_res_s, NAcq, NFrames);
         
         % summarise signal per region of interest if needed
         if region_wise_computations
