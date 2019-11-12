@@ -17,6 +17,8 @@ function HR_Ct_mM = generateHRConc(HR_tissue_map, vP, PS_perMin, Cp_AIF_mM, NTru
     end
 
     HR_Ct_mM = reshape(HR_Ct_mM, [NTrue, NFrames]);
+    HR_PS_perMin = reshape(HR_PS_perMin, NTrue);
+    HR_vP = reshape(HR_vP, NTrue);
 
     if save_HR_scans 
         HR_V.fname=[output_folder '/HR_PS_perMin'];

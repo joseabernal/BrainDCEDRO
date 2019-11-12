@@ -17,8 +17,7 @@ HR_Ct_mM = generateHRConc(...
     save_HR_scans, output_folder, HRes_mm);
 
 % generate high res nonbrain signal
-HR_SI_nonbrain = generateHRNonBrainSignal(...
-    HR_tissue_map, ref_seg_fname, ref_enh_fname, ref_i0_fname, NTrue, NFrames); 
+HR_SI_nonbrain = generateHRNonBrainSignal(HR_tissue_map, NTrue, NFrames);
 
 % generate high res image data
 HR_SI = generateHRSignal(...

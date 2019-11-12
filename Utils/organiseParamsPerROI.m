@@ -3,6 +3,6 @@ function ROI_values = organiseParamsPerROI(input, tissue_map, NumRegions)
     for region=1:NumRegions
         mask = tissue_map == region;
 
-        ROI_values{region} = input(mask);
+        ROI_values{region} = nanmean(input(mask));
     end
 end

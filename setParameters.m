@@ -1,9 +1,8 @@
 %%Imaging parameters
-FOV_mm=[240 240 4*42]; %46 slices acquired in MSS2 (top/bottom 2 are deleted post-acquisition)
-NTrue=[512 512 512]; %dimension of image that defines the "true" object
-% NAcq=[256 192 42]; %number of points acquired; for MSS2: 256x192x46
-NAcq=[256 256 42]; %number of points acquired; for MSS2: 256x192x46
-NDes=[256 256 42]; %dimension of MSS2 image
+FOV_mm=[240 240 175]; %46 slices acquired in MSS2 (top/bottom 2 are deleted post-acquisition)
+NTrue=[480 480 350]; %dimension of image that defines the "true" object
+NAcq=[256 46 192]; %number of points acquired; for MSS2: 256x192x46
+NDes=[256 46 192]; %dimension of MSS2 image
 NFrames=21; %number of time frames, =21 for MSS2
 t_res_s=73; %temporal resolution
 t_acq_s=t_res_s*NFrames; %total acquisition time
@@ -16,14 +15,15 @@ FA_deg=12; %flip angle
 save_HR_scans = true;
 
 %Low resolution parameters
-save_LR_scans = false;
+save_LR_scans = true;
 
 %Type of experiment
-region_wise_computations = true;
+regression_type = 'linear'; %either robust or linear
+region_wise_computations = false;
 
 %Distortion extent
-SNR = Inf;
-motion_extent = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];
+SNR = 43; %Estimated SNR value in MSSII
+k_space_mix_proportion = 0.6;
 
 %Correction params
 use_correction = false;
@@ -33,13 +33,13 @@ is_voxel_wise = true;
 Hct=0.45;
 [t_s, Cp_AIF_mM] = DCEFunc_getParkerModAIF(t_res_s,t_acq_s,t_start_s,Hct); %includes pre-contrast data points (zeros)
 
-%BG CSF NAWM WMH XX GM XX RSL S&S VES spacebrain-skull
-NumRegions = 11;
-T10_s     = [0   4.22  0.99  1.10  nan 1.34  nan 1.27 1.39 1.46 2.67]; % MSS2 population average values except for S&S, VES, SBS
-T2s0_s    = [nan 1     1     1     1   1     1   1    1    1    1   ];
-PS_perMin = [nan 0     2.75  3.91  nan 3.85  nan 5.02 0    0    0   ]*1E-4; %permeability
-vP=         [nan 0     0.57  0.72  nan 1.20  nan 0.72 0    100  0   ]*1E-2; %plasma volume fraction
-S0=         [nan 6900  7300  8200  nan 7000  nan 4537 nan  9000  nan ]; %equilibrium signal (~proton density)
+%BG CSF NAWM WMH RSL GM Dura Muscle Bone SkullDiploe SkullInner SkullOuter Vessel
+NumRegions = 13;
+T10_s     = [0   4.22 0.99  1.20 1.27 1.34 0.36 0.23 0.61 0.22 0.88 0.89 1.46];
+T2s0_s    = [nan 1    1     1    1    1    1    1    1    1    1    1    1   ];
+PS_perMin = [nan 0    2.75  3.91 5.02 3.85 nan  nan  nan  nan  nan  nan  0   ]*1E-4; %permeability
+vP=         [nan 0    0.57  0.72 0.72 1.20 nan  nan  nan  nan  nan  nan  100 ]*1E-2; %plasma volume fraction
+S0=         [nan 8384 9145  9319 9267 9166 nan  nan  nan  nan  nan  nan  9000]; %equilibrium signal (~proton density)
 r1_perSpermM=4.2; %R1 relaxivity;
 r2_perSpermM=0; %ignore T2* effects for now, 6.7s-1mM-1 otherwise
 
@@ -49,14 +49,10 @@ HRes_mm = FOV_mm./NTrue;
 LRes_mm = FOV_mm./NDes;
 
 %%Input parameters
-seg_fname = ['input', filesep, 'sub-S03_ses-SES01_anat_sub-S03_ses-SES01_run-02_T1w_seg_wmhrsl.nii'];
+seg_fname = ['input', filesep, 'MIDA_v1.0', filesep, 'MIDA_v1_voxels', filesep, 'MIDA_Mod_PVWMH2.nii'];
 
-ref_seg_fname = sprintf(ref_seg_fname_pattern, dataset{1});
-ref_enh_fname = sprintf(ref_enh_fname_pattern, dataset{1});
-ref_i0_fname = sprintf(ref_i0_fname_pattern, dataset{1});
+load('dataset.mat')
+load('motion_labels.mat')
+patient_idx = 172;
 
-trans_matrices = cell(NFrames, 1);
-for iFrame = 2:NFrames
-    trans_matrix_fname = sprintf(trans_matrix_pattern, dataset{2}, dataset{4},iFrame);
-    trans_matrices{iFrame} = invert(affine3d(load(trans_matrix_fname, '-ASCII')'));
-end
+
