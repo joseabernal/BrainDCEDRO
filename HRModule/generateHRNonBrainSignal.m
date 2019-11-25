@@ -1,16 +1,27 @@
-%% Generate high resolution region segmentation map
-function HR_SI_nonbrain = generateHRNonBrainSignal(HR_tissue_map, NTrue, NFrame)
-    SI_nonbrain = [7	375.063	64.7554	369.188	33.0317	393.938	43.5024	387.313	37.7213	387.125	36.2746	388.125	38.4913	391.313	30.0682	382.438	32.1019	386.25	32.7974	391.813	32.4966	384.313	27.9326	389.25	33.2556	386.5	26.6883	387.5	25.6541	373.625	30.3268	371.813	31.5726	378.25	28.1981	370.188	29.7953	380.938	28.3466	369.313	28.9936	364.188	27.8046;
-    8	1385.63	56.7249	1389.13	35.3683	1428.44	36.6969	1378.31	50.7828	1369.63	36.4177	1434.19	80.0702	1402.94	48.8118	1375.56	63.1527	1369.69	55.7682	1315.75	53.0666	1374.31	79.6055	1339.25	65.8458	1366.63	51.8226	1348.88	44.2747	1398.75	26.1445	1365.25	25.4362	1361.88	59.9821	1430.19	34.6145	1412.5	50.4592	1366.56	20.7813	1283.5	78.8771;
-    9	573	20.324	580.313	27.8058	658.688	32.2319	679.688	28.3307	690.125	36.8273	704.688	52.249	688.438	26.9517	708	20.5394	690.625	26.0484	612.25	47.3392	775.188	35.5738	680.75	16.2829	782.563	13.0024	746.063	16.3522	743.438	23.8271	838.438	19.4627	805.188	41.3589	741	29.806	842.5	53.1576	776.625	17.1148	724.625	22.9895;
-    10	634.192	81.7186	650.769	94.8997	632.962	88.1328	616.462	89.5554	633.808	89.575	629.115	85.4177	620.269	77.2226	639.5	77.0155	624.154	80.5996	607.308	75.0327	597.5	64.9882	612.5	77.9016	640.731	72.8173	603.538	72.2801	621.346	74.7261	611.654	79.0655	579.731	72.519	603.269	74.6718	619.308	86.5609	603	67.3991	586.615	54.475;
-    11	199	78.1127	224.813	85.7059	246.5	92.5613	228	122.135	239.375	120.499	228.375	106.33	219.688	104.307	244.813	100.724	224.313	109.357	232.875	103.011	214.875	105.453	220.438	102.825	219.813	88.5891	215.313	94.3403	238	90.2153	225.563	100.887	206.813	114.402	214.5	87.8802	212.625	102.058	224.813	92.1334	231.625	82.5396;
-    12	178.423	92.4689	212.423	102.779	201.115	77.3787	202.654	81.9878	216.538	85.4664	203.538	102.021	205.615	92.4234	228.769	91.5905	215.654	98.5787	211.654	103.83	216.654	100.531	234.346	115.177	222.154	106.78	205.769	102.89	218.231	82.7054	211.154	103.634	179.038	116.69	190.308	114.326	180.038	129.69	178.769	107.782	250.5	103.865];
+%% Create high resolution non-brain time series
+%  Using the spatial distribution information given by the high resolution
+%  tissue map, this function assigns the signal profiles to non-brain
+%  structures.
+%  
+%  Inputs:
+%  - HR_tissue_map: 3D high resolution segmentation map
+%  - SI_nonbrain: 2D matrix with signal profile for non-brain structures
+%  - NTrue: Dimension of image that defines the "true" object
+%  - NFrames: Number of frames
+%
+%  Outputs:
+%   - HR_SI_nonbrain: 4D high resolution signal-time curves for non-brain
+%                     structures
+%
+% (c) Jose Bernal and Michael J. Thrippleton 2019
 
+function HR_SI_nonbrain = generateHRNonBrainSignal(HR_tissue_map, SI_nonbrain, NTrue, NFrame)
     HR_tissue_map = reshape(HR_tissue_map, [numel(HR_tissue_map), 1]);
+
     HR_SI_nonbrain = zeros([numel(HR_tissue_map), NFrame]);
     for seg_class_idx = 1:size(SI_nonbrain, 1)
         seg_class = SI_nonbrain(seg_class_idx, 1);
+
         HR_SI_nonbrain(HR_tissue_map == seg_class, :) = ...
             repmat(SI_nonbrain(seg_class_idx, 2:2:end), [sum(HR_tissue_map == seg_class), 1]);
     end

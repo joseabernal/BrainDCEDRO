@@ -1,7 +1,15 @@
 %% Generate high resolution region segmentation map
-function [HR_tissue_map, LR_tissue_map] = generateHRSegMap(seg_fname, NTrue, NAcq)
-    %%Load ground truth
-    HR_tissue_map = imresize3(double(niftiread(seg_fname)), NTrue, 'nearest');
+%  Reads the high resolution segmentation map. Please make sure you have
+%  tuned the tissue characteristics prior to using this function.
+%  
+%  Inputs:
+%  - seg_fname: filename of the segmentation map
+%
+%  Outputs:
+%   - HR_tissue_map: 3D high resolution segmentation map
+%
+% (c) Jose Bernal and Michael J. Thrippleton 2019
 
-    LR_tissue_map = uint8(imresize3(HR_tissue_map, NAcq, 'nearest'));
+function [HR_tissue_map] = generateHRSegMap(seg_fname)
+    HR_tissue_map = niftiread(seg_fname); % Load ground truth
 end

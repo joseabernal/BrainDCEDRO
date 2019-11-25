@@ -1,9 +1,17 @@
-function HR_k_space = generateHRKSpace(HR_SI, trans_matrices, NTrue, NFrames)
-    %%Apply gross motion to each frame
-    for iFrame = 2:NFrames
-        HR_SI(:, :, :, iFrame) = imwarp(HR_SI(:, :, :, iFrame), trans_matrices{iFrame}, 'cubic', 'OutputView', imref3d(NTrue));
-    end
+%% Compute 3D Fourier transform to each frame in DCE-MRI acquisition
+%  This function computes the 3D discrete Fourier transform to each frame
+%  in the input DCE-MRI acquisition.
+%  
+%  Inputs:
+%  - HR_SI: 4D high resolution scan
+%  - NFrames: Number of frames
+%
+%  Outputs:
+%   - HR_k_space: k-space for each 3D frame
+%
+% (c) Jose Bernal and Michael J. Thrippleton 2019
 
+function HR_k_space = generateHRKSpace(HR_SI, NFrames)
     %%Inverse FT to calculate HR k-space image
     HR_k_space=nan(size(HR_SI));
     for iFrame=1:NFrames
