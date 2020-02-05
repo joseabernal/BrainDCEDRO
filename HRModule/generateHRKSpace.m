@@ -5,6 +5,7 @@
 %  Inputs:
 %  - HR_SI: 4D high resolution scan
 %  - NFrames: Number of frames
+% DONT THINK NFRAMES IS REQUIRED AS AN INPUT
 %
 %  Outputs:
 %   - HR_k_space: k-space for each 3D frame
