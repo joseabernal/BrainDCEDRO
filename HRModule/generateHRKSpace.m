@@ -1,6 +1,6 @@
 %% Compute 3D Fourier transform to each frame in DCE-MRI acquisition
 %  This function computes the 3D discrete Fourier transform to each frame
-%  in the input DCE-MRI acquisition.
+%  in the input image.
 %  
 %  Inputs:
 %  - HR_SI: 4D high resolution scan
@@ -12,7 +12,7 @@
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
 function HR_k_space = generateHRKSpace(HR_SI, NFrames)
-    %%Inverse FT to calculate HR k-space image
+    %%Inverse FT in each of 3 spatial dimensions to calculate HR k-space image
     HR_k_space=nan(size(HR_SI));
     for iFrame=1:NFrames
         HR_k_space(:,:,:,iFrame)=fftshift(ifftn(ifftshift(HR_SI(:,:,:,iFrame))));
