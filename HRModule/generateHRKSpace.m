@@ -12,6 +12,7 @@
 %
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
+% YOU COULD GENERALISE THIS FUNCTION BY REMOVING "HR" FROM NAME AND VARIABLE NAMES
 function HR_k_space = generateHRKSpace(HR_SI, NFrames)
     %%Inverse FT in each of 3 spatial dimensions to calculate HR k-space image
     HR_k_space=nan(size(HR_SI));
