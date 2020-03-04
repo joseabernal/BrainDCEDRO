@@ -13,6 +13,7 @@ maxNumCompThreads(15);
 setConfig; % set configuration (paths)
 setParameters; % set parameters
 
+%%I THINK YOURE DOWNSAMPLING MASKS VIA K-SPACE TRUNCATION, WHICH IS UNUSUAL AND WILL RESULT IN ARTEFACT. WE SHOULD DISCUSS...
 LR_tissue_map = generateLRSegMap(seg_fname, NAcq, NDiscard, NumRegions); % generate low res segmentation map
 
 if erosion_extent ~= 0
