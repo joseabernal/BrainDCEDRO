@@ -24,7 +24,8 @@ function LR_SI = generateLRData(HR_k_space, trans_matrices, SNR, NDiscard, NAcq,
     LR_SI=nan(size(LR_k_space));
     for iFrame=1:NFrames
         %%Apply motion artefact to acquired k-space data
-	%WOULDNT IT BE MORE REALISTIC TO APPLY THE TRANSFORMS TO THE HR DATA, THEN RESAMPLE AND COMBINE?
+	%WOULDNT IT BE MORE REALISTIC TO APPLY THE TRANSFORMS TO THE HR IMAGE, THEN RESAMPLE AND COMBINE?
+	%% NOT VERY CLEAR WHAT THIS DOES. CAN WE DISCUSS...
         LR_k_space_motion=add_motion_artifacts_rotation_kspace(...
             LR_k_space(:,:,:,iFrame), ...
             apply_affine_transform(LR_k_space(:,:,:,iFrame), trans_matrices{iFrame}, trans_matrices{max(1, iFrame-1)}));
@@ -44,6 +45,7 @@ function LR_SI = generateLRData(HR_k_space, trans_matrices, SNR, NDiscard, NAcq,
 end
 
 function LR_k_space = apply_affine_transform(LR_k_space, trans_matrix_cur, trans_matrix_des)
+%DOCUMENT. SIMPLIFY(?)
     if isempty(trans_matrix_cur)
         trans_matrix_cur = affine3d(eye(4));
     end
