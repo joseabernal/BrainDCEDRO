@@ -5,10 +5,10 @@
 %  in time.
 %  
 %  Inputs:
-%  - HR_tissue_map: 3D segmentation map
+%  - HR_tissue_map: 3D segmentation map (value indicates tissue)
 %  - HR_SI_nonbrain: 4D signal-time curves for non-brain structures
-%  - vP: Capillary blood plasma fraction per unit of tissue
-%  - PS_perMin: Blood-brain barrier leakage rate per minute
+%  - vP: Capillary blood plasma fraction per unit of tissue (vector containing 1 vP value per tissue)
+%  - PS_perMin: Blood-brain barrier leakage rate per minute (vector containing 1 PS value per tissue)
 %  - Cp_AIF_mM: Contrast concentration in arterial input function in
 %               millimoles
 %  - NTrue: Dimension of image that defines the "true" object
@@ -29,7 +29,7 @@ function [HR_Ct_mM, HR_PS_perMin, HR_vP] = generateHRConc(HR_tissue_map, vP, PS_
     HR_vP = vP(HR_tissue_map);
     HR_PS_perMin = PS_perMin(HR_tissue_map);
     
-    HR_vP = reshape(HR_vP, [numel(HR_vP), 1]);
+    HR_vP = reshape(HR_vP, [numel(HR_vP), 1]); %EQUIVALENT TO HR_vP=HR_vP(:)
     HR_PS_perMin = reshape(HR_PS_perMin, [numel(HR_PS_perMin), 1]);
 
     % Generate high resolution 4D concentration time series Note: we use

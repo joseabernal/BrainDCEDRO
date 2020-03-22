@@ -5,25 +5,27 @@
 %  
 %  Inputs:
 %  - HR_tissue_map: 3D high resolution segmentation map
-%  - SI_nonbrain: 2D matrix with signal profile for non-brain structures
+%  - SI_nonbrain: 2D matrix with signal profile for each non-brain structure. Each
+%       row corresponds to the tissue class number, followed by ...EXPLAIN FORMAT
 %  - NTrue: Dimension of image that defines the "true" object
 %  - NFrames: Number of frames
 %
 %  Outputs:
 %   - HR_SI_nonbrain: 4D high resolution signal-time curves for non-brain
-%                     structures
+%                     structures. Each non-brain voxel is assigned the time series
+%                     for corresponding to its tissue type.
 %
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
 function HR_SI_nonbrain = generateHRNonBrainSignal(HR_tissue_map, SI_nonbrain, NTrue, NFrame)
     HR_tissue_map = reshape(HR_tissue_map, [numel(HR_tissue_map), 1]);
 
-    HR_SI_nonbrain = zeros([numel(HR_tissue_map), NFrame]);
+    HR_SI_nonbrain = zeros([numel(HR_tissue_map), NFrame]); %BETTER TO PREALLOCATE TO NAN?
     for seg_class_idx = 1:size(SI_nonbrain, 1)
         seg_class = SI_nonbrain(seg_class_idx, 1);
 
         HR_SI_nonbrain(HR_tissue_map == seg_class, :) = ...
-            repmat(SI_nonbrain(seg_class_idx, 2:2:end), [sum(HR_tissue_map == seg_class), 1]);
+            repmat(SI_nonbrain(seg_class_idx, 2:2:end), [sum(HR_tissue_map == seg_class), 1]); %CONFUSING IF YOU DONT UNDERSTAND THE FORMAT OF SI_nonbrain
     end
     
     HR_SI_nonbrain = reshape(HR_SI_nonbrain, [NTrue, NFrame]);

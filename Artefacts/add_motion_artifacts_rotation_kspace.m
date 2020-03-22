@@ -14,7 +14,7 @@
 
 function composite_k_space = add_motion_artifacts_rotation_kspace(k_space_position_b, k_space_position_a)
     k_space_mix_proportion = rand();
-    
+    %YOU HAD BETTER TALK ME THROUGH THIS FUNCTION...
     k_space_lines = zeros(size(k_space_position_b, 2) * size(k_space_position_b, 3), 1);
 
     k_space_position_a_lines = ceil(k_space_mix_proportion * size(k_space_lines, 1));

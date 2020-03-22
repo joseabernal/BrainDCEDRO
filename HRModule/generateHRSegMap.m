@@ -10,6 +10,8 @@
 %
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
+%SEEMS ODD TO USE A 1-LINE FUNCTION...BUT IM SURE YOU KNOW WHAT YOU'RE DOING!
+
 function [HR_tissue_map] = generateHRSegMap(seg_fname)
     HR_tissue_map = niftiread(seg_fname); % Load ground truth
 end
