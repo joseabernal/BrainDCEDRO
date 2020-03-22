@@ -6,7 +6,7 @@ Dynamic contrast-enhanced MRI (DCE-MRI) quantifies endothelial dysfunction but i
 ## Materials and methods
 DCE-MRI consists of discretising a dynamic object to a set of finite spatial frequencies and samples in time. We simulated this process through three main steps: MR signal generation, signal sampling, and model fitting to estimate the permeability-surface area product (PS), as illustrated in Fig. 1.
 
-![Workflow](https://github.com/joseabernal/BrainDCEDRO/blob/master/Worflow_generator.jpg)
+![Workflow](https://github.com/joseabernal/BrainDCEDRO/blob/master/Images/Worflow_generator.jpg)
 
 Our digital reference object (DRO) used a high-resolution (480x350x480 matrix size; 0.5mm isotropic) human head model [3], containing both brain and non-brain regions; and white matter hyperintensities and lacunar stroke lesions that we added using spatial occurrence templates from patient data. We used pharmacokinetic parameters from a patient stroke cohort (n=201) [4] to assign realistic values to each tissue, generate 4D concentration-time curves using the Patlak model and, 4D signal-time curves corresponding to the 1.5-T imaging protocol described in [4]. For generating the signal in non-brain structures, a trained analyst manually sampled signal-time profiles from patient data, guided by an experienced neuroradiologist.
 Imaging comprised modelling patient movement between frames using transformation matrices obtained from our cohort, truncating the k-space of each frame of the 4D signal to simulate the scanning resolution (0.94x0.94x4mm), adding additive white Gaussian noise (AWGN), and motion artefacts by creating composite k-spaces from consecutive head positions [5].
@@ -15,7 +15,7 @@ After generating the scanner-resolution DCE-MRI, we realigned all frames, comput
 ## Results
 These experiments represent a demonstration of the proposed DRO framework. In Fig. 2, we provide visuals of PS maps when affected by truncation, AWGN, bulk motion, and motion artefacts progressively. K-space sampling led to oscillations in the PS maps and negative values around ringing artefacts and blood vessels. The AWGN propagated from the signal-time curves to the PS maps and, occasionally, resulted in negative values. Bulk motion, followed by truncation and noise, produced noticeable deviations in all brain regions, presumably since ringing artefacts varied from one frame to another. Motion artefacts propagated from the signal-time curves to the PS maps and led to overestimated permeability values around them.
 
-![Results](https://github.com/joseabernal/BrainDCEDRO/blob/master/illustrationssimulations.jpg)
+![Results](https://github.com/joseabernal/BrainDCEDRO/blob/master/Images/illustrationssimulations.jpg)
 
 ## Conclusions
 We developed a tool for mimicking the DCE-MRI acquisition process to test and compare existing and future acquisition protocols and processing strategies. We simulated noise, truncation and motion to understand their repercussions in permeability mapping in the ageing brain. To our knowledge, this is the first time that spatiotemporal imaging artefacts have been simulated for this purpose.
