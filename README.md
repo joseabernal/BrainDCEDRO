@@ -23,7 +23,11 @@ Our findings show that AWGN, bulk motion, motion artefacts, and truncation artef
 
 ## References
 [1]	M. J. Thrippleton et al., “Quantifying blood-brain barrier leakage in small vessel disease: Review and consensus recommendations,” Alzheimer’s Dement., vol. 44, no. 6, pp. 1–19, 2019.
+
 [2]	S. R. Barnes, T. S. C. Ng, A. Montagne, M. Law, B. V. Zlokovic, and R. E. Jacobs, “Optimal acquisition and modeling parameters for accurate assessment of low Ktrans blood-brain barrier permeability using dynamic contrast-enhanced MRI,” Magn. Reson. Med., vol. 75, no. 5, pp. 1967–1977, 2016.
+
 [3]	M. I. Iacono et al., “MIDA: A multimodal imaging-based detailed anatomical model of the human head and neck,” PLoS One, vol. 10, no. 4, 2015.
+
 [4]	A. K. Heye et al., “Tracer kinetic modelling for DCE-MRI quantification of subtle blood-brain barrier permeability,” Neuroimage, vol. 125, pp. 446–455, 2016.
+
 [5]	R. Shaw, C. Sudre, S. Ourselin, and M. J. Cardoso, “MRI k-Space Motion Artefact Augmentation: Model Robustness and Task-Specific Uncertainty,” Int. Conf. Med. Imaging with Deep Learn., pp. 427–436, 2019.
