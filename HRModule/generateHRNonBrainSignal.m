@@ -26,7 +26,7 @@ function HR_SI_nonbrain = generateHRNonBrainSignal(HR_tissue_map, SI_nonbrain, N
         seg_class = SI_nonbrain(seg_class_idx, 1);
 
         HR_SI_nonbrain(HR_tissue_map == seg_class, :) = ...
-            repmat(SI_nonbrain(seg_class_idx, 2:2:end), [sum(HR_tissue_map == seg_class), 1]);
+            repmat(SI_nonbrain(seg_class_idx, 1:end), [sum(HR_tissue_map == seg_class), 1]);
     end
     
     HR_SI_nonbrain = reshape(HR_SI_nonbrain, [NTrue, NFrame]);

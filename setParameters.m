@@ -5,14 +5,14 @@
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
 %Imaging parameters
-FOV_mm=[240 240 175]; %46 slices acquired in MSS2 (top/bottom 2 are deleted post-acquisition)
+FOV_mm=[240 240 175]; %46 slices acquired in MSS2 (top/bottom 2 are deleted post-acquisition) %NOT SURE HOW YOU GET TO THIS. 46 SLICES X 4MM = 184 MM
 NTrue=[480 480 350]; %dimension of image that defines the "true" object
 NAcq=[256 60 187]; %number of points acquired; for MSS2: 256x192x46
 NDes=[256 60 187]; %dimension of MSS2 image
 NFrames=21; %number of time frames, =21 for MSS2
 t_res_s=73; %temporal resolution
 t_acq_s=t_res_s*NFrames; %total acquisition time
-t_start_s=t_res_s; %injection starts at this time
+t_start_s=t_res_s; %injection starts at this time (following acquisition of 1 volume)
 TR_s=8.24e-3;
 TE_s=3.1e-3;
 FA_deg=12; %flip angle
@@ -52,8 +52,8 @@ SI_nonbrain = ...
 
 %derive further parameters
 NDiscard =(NTrue - NAcq)/2; %number of k-space points to discard on either side when computing the acquired data
-HRes_mm = FOV_mm./NTrue;
-LRes_mm = FOV_mm./NDes;
+HRes_mm = FOV_mm./NTrue; %resolution of high resolution object
+LRes_mm = FOV_mm./NDes; %scan resolution
 
 %%Input parameters
 HR_seg_fname = ['input', filesep, 'MIDA_v1.0', filesep, 'MIDA_v1_voxels', filesep, 'MIDA_Mod_DGM_PVWMH2.nii'];

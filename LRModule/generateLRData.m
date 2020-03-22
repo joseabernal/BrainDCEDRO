@@ -1,7 +1,7 @@
 %% "Acquire" scanning resolution signal
 %  Truncate high resolution DCE-MRI signal to produce the "acquired" scanning
 %  resolution DCE-MRI signal. The signal is affected by noise, determined
-%  by the signal-to-noise ratio.
+%  by the standard deviation of the noise.
 %  
 %  Inputs:
 %  - HR_k_space: K-space of each high resolution frame
