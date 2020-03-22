@@ -4,23 +4,26 @@
 %  
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
-clc;
-clear all;
-close all;
+% clc;
+% clear all;
+% close all;
 
 maxNumCompThreads(15);
 
 setConfig; % set configuration (paths)
 setParameters; % set parameters
 
-LR_tissue_map = generateLRSegMap(seg_fname, NAcq, NDiscard, NumRegions); % generate low res segmentation map
+output_folder = 'output';
+
+LR_tissue_map = generateLRSegMap(LR_seg_fname); % generate low res segmentation map
 
 if erosion_extent ~= 0
     LR_tissue_map = erode_seg_map(LR_tissue_map, [3,4,5,6], erosion_extent, NumRegions);
 end
 
-experiment_results = zeros(size(dataset, 1), 2, 13, 6);
+experiment_results = zeros(size(dataset, 1), 2, 16, 6);
 for experiment_idx = 1:size(dataset, 1)
+    disp(experiment_idx)
     % generate low resolution (acquired) image data
     fname = ['LR_SI_', num2str(experiment_idx)];
     LR_corr_fname = [output_folder, filesep, fname, '_mcf.nii.gz'];
@@ -28,7 +31,7 @@ for experiment_idx = 1:size(dataset, 1)
     LR_SI_dense = niftiread(LR_corr_fname);
 
     % mask low resolution to obtain signal of regions of interest
-    LR_SI_dense = LR_SI_dense .* (LR_tissue_map > 1 & LR_tissue_map < 7);
+    LR_SI_dense = LR_SI_dense .* (LR_tissue_map > 1 & (LR_tissue_map < 7 | LR_tissue_map == 14));
     
     % fit PS and vp
     [LR_PS_perMin_dense, LR_vP_dense] = fitLRData(...

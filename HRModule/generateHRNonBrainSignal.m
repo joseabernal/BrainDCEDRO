@@ -5,13 +5,16 @@
 %  
 %  Inputs:
 %  - HR_tissue_map: 3D high resolution segmentation map
-%  - SI_nonbrain: 2D matrix with signal profile for non-brain structures
+%  - SI_nonbrain: 2D matrix with signal profile for each non-brain structure. Each
+%       row corresponds to the tissue class number, followed by the mean
+%       intensity in each time point
 %  - NTrue: Dimension of image that defines the "true" object
 %  - NFrames: Number of frames
 %
 %  Outputs:
 %   - HR_SI_nonbrain: 4D high resolution signal-time curves for non-brain
-%                     structures
+%                     structures. Each non-brain voxel is assigned the time series
+%                     for corresponding to its tissue type.
 %
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 

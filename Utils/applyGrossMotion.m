@@ -3,19 +3,28 @@
 %  in the input DCE-MRI acquisition.
 %  
 %  Inputs:
-%  - SI: 4D DCE-MRI signal
+%  - SI: 3D/4D DCE-MRI signal
 %  - trans_matrices: Transformation matrices per frame
 %  - Dim: Dimension of each frame
 %  - NFrames: NUmber of frames
 %
 %  Outputs:
-%   - SI: 4D DCE-MRI signal
+%   - SI: 3D/4D DCE-MRI signal
 %
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
 function SI = applyGrossMotion(SI, trans_matrices, Dim, NFrames)
-    %%Apply gross motion to each frame
-    for iFrame = 2:NFrames
-        SI(:, :, :, iFrame) = imwarp(SI(:, :, :, iFrame), trans_matrices{iFrame}, 'cubic', 'OutputView', imref3d(Dim));
+    if ndims(SI) == 4
+        %%Apply gross motion to each frame
+        for iFrame = 2:NFrames
+            SI(:, :, :, iFrame) = applyGrossMotionFrame(SI(:, :, :, iFrame), trans_matrices{iFrame}, Dim);
+        end
+    else
+        SI = applyGrossMotionFrame(SI, trans_matrices, Dim);
     end
+end
+
+
+function SI = applyGrossMotionFrame(SI, trans_matrices, Dim)
+    SI = imwarp(SI, trans_matrices, 'cubic', 'OutputView', imref3d(Dim));
 end

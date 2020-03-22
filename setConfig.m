@@ -4,8 +4,10 @@
 %  
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
-root='/home/s1858467/BRICIA/';
-rootProj='/home/s1858467/BRICIA/jbernal_PhD/';
+maxNumCompThreads(15);
+
+root='/DSTORE/BRICIA/';
+rootProj='/DSTORE/BRICIA/jbernal_PhD/';
 
 addpath('Artefacts');
 addpath('Compensation');

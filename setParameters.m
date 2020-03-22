@@ -7,8 +7,8 @@
 %Imaging parameters
 FOV_mm=[240 240 175]; %46 slices acquired in MSS2 (top/bottom 2 are deleted post-acquisition)
 NTrue=[480 480 350]; %dimension of image that defines the "true" object
-NAcq=[256 46 192]; %number of points acquired; for MSS2: 256x192x46
-NDes=[256 46 192]; %dimension of MSS2 image
+NAcq=[256 60 187]; %number of points acquired; for MSS2: 256x192x46
+NDes=[256 60 187]; %dimension of MSS2 image
 NFrames=21; %number of time frames, =21 for MSS2
 t_res_s=73; %temporal resolution
 t_acq_s=t_res_s*NFrames; %total acquisition time
@@ -18,35 +18,37 @@ TE_s=3.1e-3;
 FA_deg=12; %flip angle
 
 %Type of experiment
+experiment_idx = 4;
 erosion_extent = 0;
 regression_type = 'linear'; %either robust or linear
 
 %Noise extent
-SNR = 45.5; %Estimated SNR value in MSSII
+SDnoise = 33.176421730654326; %Estimated noise SD value for MSSII
 
 %%Tissue parameters for each tissue type
 Hct=0.45;
 [t_s, Cp_AIF_mM] = DCEFunc_getParkerModAIF(t_res_s,t_acq_s,t_start_s,Hct); %includes pre-contrast data points (zeros)
 
-%BG CSF NAWM WMH RSL GM Dura Muscle Bone SkullDiploe SkullInner SkullOuter Vessel
-NumRegions = 13;
-T10_s     = [0   4.22 0.99  1.20 1.27 1.34 0.36 0.23 0.61 0.22 0.88 0.89 1.46];
-T2s0_s    = [nan 1    1     1    1    1    1    1    1    1    1    1    1   ];
-% PS_perMin = [nan 0    2.96  3.96 5.77 3.91 nan  nan  nan  nan  nan  nan  0   ]*1E-4; %permeability
-% vP=         [nan 0    0.58  0.80 0.80 1.21 nan  nan  nan  nan  nan  nan  100 ]*1E-2; %plasma volume fraction
-PS_perMin = [nan 0    2.75  3.91 7.25 3.85 nan  nan  nan  nan  nan  nan  0   ]*1E-4; %permeability
-vP=         [nan 0    0.57  0.72 1.05 1.20 nan  nan  nan  nan  nan  nan  100 ]*1E-2; %plasma volume fraction
-M0=         [nan 8384 9145  9319 9166 9267 nan  nan  nan  nan  nan  nan  9000]; %equilibrium signal (~proton density)
+%BG CSF NAWM WMH RSL CGM Dura Muscle Bone SkullDiploe SkullInner SkullOuter Vessel DGM Skin+Connective_tissue Adipose_tissue
+NumRegions = 16;
+T10_s     =   [0   4.22 0.99  1.20 1.27 1.34  nan  nan  nan  nan  nan  nan  1.46  1.34  nan   nan];
+T2s0_s    =   [nan 1    1     1    1    1     1    1    1    1    1    1    1     1     1     1  ];
+PS_perMin =   [nan 0    2.75  3.91 7.25 3.85  nan  nan  nan  nan  nan  nan  0     3.85  nan   nan]*1E-4; %permeability
+vP=           [nan 0    0.57  0.72 1.05 1.20  nan  nan  nan  nan  nan  nan  100   1.20  nan   nan]*1E-2; %plasma volume fraction
+M0=           [nan 8520 10000 9400 10700 9298 nan  nan  nan  nan  nan  nan  8817  9298  nan   nan]; %equilibrium signal (~proton density)
+
 r1_perSpermM=4.2; %R1 relaxivity;
 r2_perSpermM=0; %ignore T2* effects for now, 6.7s-1mM-1 otherwise
 
 SI_nonbrain = ...
-    [7	375.063	64.7554	369.188	33.0317	393.938	43.5024	387.313	37.7213	387.125	36.2746	388.125	38.4913	391.313	30.0682	382.438	32.1019	386.25	32.7974	391.813	32.4966	384.313	27.9326	389.25	33.2556	386.5	26.6883	387.5	25.6541	373.625	30.3268	371.813	31.5726	378.25	28.1981	370.188	29.7953	380.938	28.3466	369.313	28.9936	364.188	27.8046;
-    8	1385.63	56.7249	1389.13	35.3683	1428.44	36.6969	1378.31	50.7828	1369.63	36.4177	1434.19	80.0702	1402.94	48.8118	1375.56	63.1527	1369.69	55.7682	1315.75	53.0666	1374.31	79.6055	1339.25	65.8458	1366.63	51.8226	1348.88	44.2747	1398.75	26.1445	1365.25	25.4362	1361.88	59.9821	1430.19	34.6145	1412.5	50.4592	1366.56	20.7813	1283.5	78.8771;
-    9	573	20.324	580.313	27.8058	658.688	32.2319	679.688	28.3307	690.125	36.8273	704.688	52.249	688.438	26.9517	708	20.5394	690.625	26.0484	612.25	47.3392	775.188	35.5738	680.75	16.2829	782.563	13.0024	746.063	16.3522	743.438	23.8271	838.438	19.4627	805.188	41.3589	741	29.806	842.5	53.1576	776.625	17.1148	724.625	22.9895;
-    10	634.192	81.7186	650.769	94.8997	632.962	88.1328	616.462	89.5554	633.808	89.575	629.115	85.4177	620.269	77.2226	639.5	77.0155	624.154	80.5996	607.308	75.0327	597.5	64.9882	612.5	77.9016	640.731	72.8173	603.538	72.2801	621.346	74.7261	611.654	79.0655	579.731	72.519	603.269	74.6718	619.308	86.5609	603	67.3991	586.615	54.475;
-    11	199	78.1127	224.813	85.7059	246.5	92.5613	228	122.135	239.375	120.499	228.375	106.33	219.688	104.307	244.813	100.724	224.313	109.357	232.875	103.011	214.875	105.453	220.438	102.825	219.813	88.5891	215.313	94.3403	238	90.2153	225.563	100.887	206.813	114.402	214.5	87.8802	212.625	102.058	224.813	92.1334	231.625	82.5396;
-    12	178.423	92.4689	212.423	102.779	201.115	77.3787	202.654	81.9878	216.538	85.4664	203.538	102.021	205.615	92.4234	228.769	91.5905	215.654	98.5787	211.654	103.83	216.654	100.531	234.346	115.177	222.154	106.78	205.769	102.89	218.231	82.7054	211.154	103.634	179.038	116.69	190.308	114.326	180.038	129.69	178.769	107.782	250.5	103.865];
+    [7	375.063	369.188	393.938	387.313	387.125	388.125	391.313	382.438	386.25	391.813	384.313	389.25	386.5	387.5	373.625	371.813	378.25	370.188	380.938	369.313	364.188	;
+     8	1385.63	1389.13	1428.44	1378.31	1369.63	1434.19	1402.94	1375.56	1369.69	1315.75	1374.31	1339.25	1366.63	1348.88	1398.75	1365.25	1361.88	1430.19	1412.5	1366.56	1283.5	;
+     9	573	580.313	658.688	679.688	690.125	704.688	688.438	708	690.625	612.25	775.188	680.75	782.563	746.063	743.438	838.438	805.188	741	842.5	776.625	724.625	;
+     10	634.192	650.769	632.962	616.462	633.808	629.115	620.269	639.5	624.154	607.308	597.5	612.5	640.731	603.538	621.346	611.654	579.731	603.269	619.308	603	586.615	;
+     11	199	224.813	246.5	228	239.375	228.375	219.688	244.813	224.313	232.875	214.875	220.438	219.813	215.313	238	225.563	206.813	214.5	212.625	224.813	231.625	;
+     12	178.423	212.423	201.115	202.654	216.538	203.538	205.615	228.769	215.654	211.654	216.654	234.346	222.154	205.769	218.231	211.154	179.038	190.308	180.038	178.769	250.5	;
+     15	745.571	974.857	1108.07	1154.64	1190.5	1208.29	1222.93	1237.07	1246	1253.07	1241.57	1259.29	1262.79	1249.93	1258.43	1244	1249.64	1262.07	1233.43	1215.64	1218.86	;
+     16	1175.5	1126.82	1105.59	1096	1085.18	1075.73	1072.36	1059.59	1069.18	1046.32	1057.32	1049.32	1056.82	1050.41	1042.05	1047.23	1037	1032.23	1033.23	1037.23	1029.41];
 
 %derive further parameters
 NDiscard =(NTrue - NAcq)/2; %number of k-space points to discard on either side when computing the acquired data
@@ -54,8 +56,8 @@ HRes_mm = FOV_mm./NTrue;
 LRes_mm = FOV_mm./NDes;
 
 %%Input parameters
-seg_fname = ['input', filesep, 'MIDA_v1.0', filesep, 'MIDA_v1_voxels', filesep, 'MIDA_Mod_PVWMH2.nii'];
-seg_dgm_fname = ['input', filesep, 'MIDA_v1.0', filesep, 'MIDA_v1_voxels', filesep, 'MIDA_Mod_DGM_PVWMH2.nii'];
+HR_seg_fname = ['input', filesep, 'MIDA_v1.0', filesep, 'MIDA_v1_voxels', filesep, 'MIDA_Mod_DGM_PVWMH2.nii'];
+LR_seg_fname = ['output', filesep, 'LR_tissue_map.nii.gz'];
 
 load('dataset.mat')
 load('motion_labels.mat')

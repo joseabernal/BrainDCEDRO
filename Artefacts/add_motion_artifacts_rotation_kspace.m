@@ -4,30 +4,30 @@
 %  when it moved to position B.
 %  
 %  Inputs:
-%  - k_space_position_b: K-space of the object in position B
-%  - k_space_position_a: K-space of the object in position A
+%  - k_space_position_after_motion: K-space of the object in position B
+%  - k_space_position_before_motion: K-space of the object in position A
 
 %  Outputs:
 %   - composite_k_space: Composite k-space
 %
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
-function composite_k_space = add_motion_artifacts_rotation_kspace(k_space_position_b, k_space_position_a)
-    k_space_mix_proportion = rand();
+function composite_k_space = add_motion_artifacts_rotation_kspace(k_space_position_after_motion, k_space_position_before_motion, NTrue)
+    % how many lines to take from kspace before motion
+    k_space_mix_threshold = rand() * NTrue(2) * NTrue(3);
     
-    k_space_lines = zeros(size(k_space_position_b, 2) * size(k_space_position_b, 3), 1);
-
-    k_space_position_a_lines = ceil(k_space_mix_proportion * size(k_space_lines, 1));
-    
-    k_space_lines(1:k_space_position_a_lines) = 1;
-    
-    k_space_lines = reshape(k_space_lines, [1, size(k_space_position_b, 2), size(k_space_position_b, 3)]);
-    
-    position_a_k_space_mask = repmat(k_space_lines, [size(k_space_position_b, 1), 1, 1]);    
-    position_b_k_space_mask = ~position_a_k_space_mask;
-    
-    upper_k_space = position_a_k_space_mask .* k_space_position_b;
-    lower_k_space = position_b_k_space_mask .* k_space_position_a;
-    
-    composite_k_space = upper_k_space + lower_k_space;
+    line_count = 0;
+    composite_k_space = zeros(size(k_space_position_before_motion));
+    for iSlice=1:size(NTrue(3))
+        for iLine=1:size(NTrue(2))
+            % take only k_space_mix_threshold lines from kspace before
+            % motion, and rest from after motion
+            if line_count < k_space_mix_threshold
+                composite_k_space(:, iLine, iSlice) = k_space_position_before_motion;
+            else
+                composite_k_space(:, iLine, iSlice) = k_space_position_after_motion;
+            end
+            line_count = line_count + 1;
+        end
+    end
 end
