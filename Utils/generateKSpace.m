@@ -1,5 +1,5 @@
-%% Compute 3D Fourier transform to each frame in DCE-MRI acquisition
-%  This function computes the 3D discrete Fourier transform to each frame
+%% Compute 3D inverse Fourier transform to each frame in DCE-MRI acquisition
+%  This function computes the 3D inverse discrete Fourier transform to each frame
 %  in the input DCE-MRI acquisition.
 %  
 %  Inputs:

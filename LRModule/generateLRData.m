@@ -1,7 +1,7 @@
 %% "Acquire" scanning resolution signal
 %  Truncate high resolution DCE-MRI signal to produce the "acquired" scanning
 %  resolution DCE-MRI signal. The signal is affected by noise, determined
-%  by the standard deviation of the noise.
+%  by the signal-to-noise ratio.
 %  
 %  Inputs:
 %  - HR_k_space: K-space of each high resolution frame
@@ -24,7 +24,7 @@ function LR_SI = generateLRData(HR_k_space, SDnoise, NDiscard, NAcq, NFrames)
         NDiscard(3)+1:NDiscard(3)+NAcq(3),:);
 
     %% Add  white Gaussian noise
-    LR_SI_noisy = aadditivedd_awgnoise(...
+    LR_SI_noisy = add_awgnoise(...
         generateImageSpace(LR_k_space, NFrames), SDnoise, NAcq, NFrames);
     
     %% Take magnitude

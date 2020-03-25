@@ -7,7 +7,7 @@
 %  - NFrames: Number of frames
 %
 %  Outputs:
-%   - HR_k_space: k-space for each 3D frame
+%   - SI: image space for each 3D frame
 %
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 

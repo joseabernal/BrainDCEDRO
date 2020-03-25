@@ -28,14 +28,14 @@ function HR_SI_motion = induceMotionHRSignal(HR_SI_clean, trans_matrices_pre, tr
             HR_SI_clean(:, :, :, iFrame), trans_matrices_post{iFrame}, NTrue, NFrames);
 
         % compute the corresponding high resolution k-space
-        HR_frame_k_space_pre = generateHRKSpace(HR_frame_gross_motion_pre, NFrames);
-        HR_frame_k_space_post = generateHRKSpace(HR_frame_gross_motion_post, NFrames);
+        HR_frame_k_space_pre = generateKSpace(HR_frame_gross_motion_pre, NFrames);
+        HR_frame_k_space_post = generateKSpace(HR_frame_gross_motion_post, NFrames);
     
         % add motion artefacts by creating composite kspaces between
         % kspaces pre and post motion
         HR_frame_k_space_motion = add_motion_artifacts_rotation_kspace(...
-            HR_frame_k_space_post, HR_frame_k_space_pre);
+            HR_frame_k_space_post, HR_frame_k_space_pre, NTrue);
         
-        HR_SI_motion(:, :, :, iFrame) = abs(fftshift(fftn(ifftshift(HR_frame_k_space_motion))));
+        HR_SI_motion(:, :, :, iFrame) = abs(generateImageSpace(HR_frame_k_space_motion));
     end
 end

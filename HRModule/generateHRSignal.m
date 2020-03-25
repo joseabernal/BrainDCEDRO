@@ -40,5 +40,5 @@ function HR_SI = generateHRSignal(HR_Ct_mM, HR_tissue_map, HR_SI_nonbrain, M0, T
     
     %%Put non-brain structures
     HR_SI = HR_SI .* (HR_SI_nonbrain==0) + HR_SI_nonbrain .* (HR_SI_nonbrain>0);
-    HR_SI(isnan(HR_SI)) = 0; %IM SURE THESE LAST 3 LINES WORK. BUT PERHAPS WE COULD DO THIS MORE ELEGANTLY/READABLY?
+    HR_SI(isnan(HR_SI)) = 0;
 end
