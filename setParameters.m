@@ -84,5 +84,5 @@ HRes_mm = FOV_mm./NTrue;
 LRes_mm = FOV_mm./NDes;
 
 %%Input parameters
-HR_seg_fname = ['input', filesep, 'MIDA_v1.0', filesep, 'MIDA_v1_voxels', filesep, 'MIDA_Mod_DGM_PVWMH2.nii'];
+HR_seg_fname = ['input', filesep, 'HR_tissue_map.nii.gz'];
 LR_seg_fname = ['output', filesep, 'LR_tissue_map.nii.gz'];
