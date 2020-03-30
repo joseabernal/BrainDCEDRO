@@ -16,8 +16,6 @@ clc;
 clear all;
 close all;
 
-maxNumCompThreads(15);
-
 % set configuration (paths)
 setConfig;
 
@@ -57,13 +55,14 @@ end
 % To simulate realistic gross motion effects, read transformation matrices 
 % used to re-align patient images
 trans_matrices_post = read_transformation_matrices(...
-    trans_matrix_pattern, dataset(experiment_idx, :), NFrames);
+    trans_matrix_pattern, experiment_idx);
 trans_matrices_pre = {affine3d(eye(4)), trans_matrices_post{1:end-1}};
 
 % Apply gross motion to high resolution signal using the transformations 
 % determined from patient data
 HR_SI_motion = induceMotionHRSignal(...
-    HR_SI_orig, trans_matrices_pre, trans_matrices_post, NTrue, NFrames);
+    HR_SI_orig, trans_matrices_pre, trans_matrices_post, NTrue, NFrames,...
+    apply_gross_motion, apply_motion_artefacts);
 
 % save generated high res 4D signal with motion
 save_scan({HR_SI_motion}, {['HR_SI_motion_', num2str(experiment_idx)]}, NTrue, output_folder, HRes_mm)

@@ -1,12 +1,19 @@
-function transformation_matrices = read_transformation_matrices(trans_matrix_pattern, patient_data, NFrames)
-    transformation_matrices = cell(NFrames, 1);
-    transformation_matrices{1} = affine3d(eye(4));
-    for iFrame = 2:NFrames
-        trans_matrix_fname = sprintf(trans_matrix_pattern, patient_data{2}, patient_data{4}, iFrame);
-        if ~exist(trans_matrix_fname)
-            transformation_matrices{iFrame} = affine3d(eye(4));
-        else
-            transformation_matrices{iFrame} = invert(affine3d(load(trans_matrix_fname, '-ASCII')'));
-        end
-    end
+%% Read transformation matrices
+% Read transformation matrices
+%  
+%  Inputs:
+%  - trans_matrix_pattern: pattern of trans_matrices (See Config file)
+%  - patient_ID: patient identification [1-205]
+
+%  Outputs:
+%   - transformation_matrices: cell array with 21 transformation matrices,
+%   one for each frame
+%
+% (c) Jose Bernal and Michael J. Thrippleton 2019
+
+function transformation_matrices = read_transformation_matrices(trans_matrix_pattern, patient_ID)
+    trans_matrices_fname = sprintf(trans_matrix_pattern, num2str(patient_ID));
+    
+    transformation_matrices = load(trans_matrices_fname);
+    transformation_matrices = transformation_matrices.trans_matrices;
 end

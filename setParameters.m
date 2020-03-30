@@ -5,24 +5,40 @@
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
 %Imaging parameters
-FOV_mm=[240 240 175]; %46 slices acquired in MSS2 (top/bottom 2 are deleted post-acquisition) %NOT SURE HOW YOU GET TO THIS. 46 SLICES X 4MM = 184 MM
+FOV_mm=[240 240 175]; %46 slices acquired in MSS2 (top/bottom 2 are deleted post-acquisition)
 NTrue=[480 480 350]; %dimension of image that defines the "true" object
 NAcq=[256 60 187]; %number of points acquired; for MSS2: 256x192x46
 NDes=[256 60 187]; %dimension of MSS2 image
 NFrames=21; %number of time frames, =21 for MSS2
 t_res_s=73; %temporal resolution
 t_acq_s=t_res_s*NFrames; %total acquisition time
-t_start_s=t_res_s; %injection starts at this time (following acquisition of 1 volume)
+t_start_s=t_res_s; %injection starts at this time
 TR_s=8.24e-3;
 TE_s=3.1e-3;
 FA_deg=12; %flip angle
 
 %Type of experiment
 experiment_idx = 4;
+apply_gross_motion = 0; %flag indicating whether to apply gross motion
+apply_motion_artefacts = 0; %flag indicating whether to induce motion artefacts
+apply_motion_correction = 0; %flag indicating whether to correct for motion
+apply_awgn = 1; %flag indicating whether to add white Gaussian noise or not
+apply_erosion = 0; %flag indicating whether to erode seg masks or not
 erosion_extent = 0;
 regression_type = 'linear'; %either robust or linear
 
-%Noise extent
+% Noise extent
+% We represent the signal-to-noise ratio (SNR) as the quotient
+% between the mean signal value and the standard deviation of the
+% background noise. The SNR of the real scans should be similar to that of
+% our simulations, i.e. SNR_real = SNR_sim or mu_real/SD_real =
+% mu_sim/SD_sim. Thus, the standard deviation of the noise in
+% our simulations should be equal to (mu_sim*SD_real)/mu_real. First, we 
+% estimated the standard deviation of the noise in real scans by computing 
+% the mean signal within the normal-appearing white matter region and the
+% standard deviation of the noise from background area. Second, we multiplied
+% the estimated standard deviation by sqrt(2-pi/2). Third, we computed the
+% standard deviation value for our simulations.
 SDnoise = 33.176421730654326; %Estimated noise SD value for MSSII
 
 %%Tissue parameters for each tissue type
@@ -40,6 +56,18 @@ M0=           [nan 8520 10000 9400 10700 9298 nan  nan  nan  nan  nan  nan  8817
 r1_perSpermM=4.2; %R1 relaxivity;
 r2_perSpermM=0; %ignore T2* effects for now, 6.7s-1mM-1 otherwise
 
+% 2D matrix with signal profile for each non-brain structure. Each row 
+% corresponds to the tissue class number, followed by the mean intensity in
+% each frame.
+% The tissue class number and its description are the following:
+% 7  - Meninges
+% 8  - Mucles and eyes
+% 9  - Mandible and vertebrae
+% 10 - Skull diploe
+% 11 - Skull outer table
+% 12 - Skull inner table
+% 15 - Skin
+% 16 - Adipose tissue
 SI_nonbrain = ...
     [7	375.063	369.188	393.938	387.313	387.125	388.125	391.313	382.438	386.25	391.813	384.313	389.25	386.5	387.5	373.625	371.813	378.25	370.188	380.938	369.313	364.188	;
      8	1385.63	1389.13	1428.44	1378.31	1369.63	1434.19	1402.94	1375.56	1369.69	1315.75	1374.31	1339.25	1366.63	1348.88	1398.75	1365.25	1361.88	1430.19	1412.5	1366.56	1283.5	;
@@ -52,12 +80,9 @@ SI_nonbrain = ...
 
 %derive further parameters
 NDiscard =(NTrue - NAcq)/2; %number of k-space points to discard on either side when computing the acquired data
-HRes_mm = FOV_mm./NTrue; %resolution of high resolution object
-LRes_mm = FOV_mm./NDes; %scan resolution
+HRes_mm = FOV_mm./NTrue;
+LRes_mm = FOV_mm./NDes;
 
 %%Input parameters
 HR_seg_fname = ['input', filesep, 'MIDA_v1.0', filesep, 'MIDA_v1_voxels', filesep, 'MIDA_Mod_DGM_PVWMH2.nii'];
 LR_seg_fname = ['output', filesep, 'LR_tissue_map.nii.gz'];
-
-load('dataset.mat')
-load('motion_labels.mat')

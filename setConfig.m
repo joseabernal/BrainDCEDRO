@@ -6,9 +6,6 @@
 
 maxNumCompThreads(15);
 
-root='/DSTORE/BRICIA/';
-rootProj='/DSTORE/BRICIA/jbernal_PhD/';
-
 addpath('Artefacts');
 addpath('Compensation');
 addpath('Evaluation');
@@ -16,16 +13,12 @@ addpath('HRModule');
 addpath('LRModule');
 addpath('Utils');
 
-addpath([rootProj 'Tools', filesep, 'spm12']);
-addpath([rootProj 'Software_utils', filesep, 'BRIClib']);
-addpath([rootProj 'Software_utils', filesep, 'NIFTI']);
-addpath([rootProj 'Software_utils', filesep, 'utilities']);
-addpath([rootProj 'Software_utils', filesep, 'DCE-functions']);
-
-procpaa_folder = [root, 'ProcPAA', filesep];
+addpath(['Tools', filesep, 'spm12']); % Download from https://www.fil.ion.ucl.ac.uk/spm/software/download/
+addpath(['Tools', filesep, 'utilities']); % Provided
+addpath(['Tools', filesep, 'DCE-functions']); % Download from https://github.com/mjt320/DCE-functions
 
 output_folder = 'output';
 
-trans_matrix_pattern = [procpaa_folder, '%s', filesep, '%s', filesep, 'Results_1r1pv', filesep, 'Matrices', filesep, 'permeability', filesep, 'mat_sig_%d_ref.mat'];
+trans_matrix_pattern = ['input', filesep, 'TransformationMatrices', filesep, '%s.mat'];
 
 mcflirt_command = 'mcflirt -in %s -cost normmi -refvol 1';

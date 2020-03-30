@@ -22,12 +22,14 @@ HR_SI = niftiread(HR_SI_fname);
 HR_k_space_motion = generateKSpace(HR_SI, NFrames);
 
 % generate low resolution (acquired) image data
-LR_SI = generateLRData(HR_k_space_motion, SDnoise, NDiscard, NAcq, NFrames);
+LR_SI = generateLRData(HR_k_space_motion, SDnoise, NDiscard, NAcq, NFrames, apply_awgn);
 
 % save low resolution signal
 fname = ['LR_SI_', num2str(experiment_idx)];
 save_scan({LR_SI}, {fname}, NAcq, output_folder, LRes_mm);
 
-% use MCFLIRT to correct for bulk motion
-corr_fname = [output_folder, filesep, fname, '_mcf.nii.gz'];
-correctBulkMotion(mcflirt_command, [output_folder, filesep, fname], corr_fname);
+if apply_motion_correction
+    % use MCFLIRT to correct for bulk motion
+    corr_fname = [output_folder, filesep, fname, '_mcf.nii.gz'];
+    correctBulkMotion(mcflirt_command, [output_folder, filesep, fname], corr_fname);
+end

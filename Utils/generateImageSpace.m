@@ -24,5 +24,5 @@ function SI = generateImageSpace(k_space, NFrames)
 end
 
 function k_space = generateImageSpaceFrame(SI)
-    k_space=fftshift(fftn(ifftshift(SI)));
+    k_space=abs(fftshift(fftn(ifftshift(SI))));
 end
