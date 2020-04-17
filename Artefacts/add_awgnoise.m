@@ -24,8 +24,10 @@
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
 function SI_noisy=add_awgnoise(SI, SDnoise, NAcq, NFrames)
+    SD = SDnoise/sqrt(2-pi/2);
+
     %% Generate additive white Gaussian noise (AWGN)
-    AWGN = normrnd(0, SDnoise, [NAcq, NFrames]);% + 1i*normrnd(0, SDnoise, [NAcq, NFrames]);
+    AWGN = normrnd(0, SD, [NAcq, NFrames]) + 1i*normrnd(0, SD, [NAcq, NFrames]);
     
     %% Add additive white Gaussian noise
     SI_noisy = SI + AWGN;

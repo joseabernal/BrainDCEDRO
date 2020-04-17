@@ -3,7 +3,7 @@
 %  in the input DCE-MRI acquisition.
 %  
 %  Inputs:
-%  - HR_SI: 3D/4D high resolution scan
+%  - k_space: 3D/4D resolution kspace
 %  - NFrames: Number of frames
 %
 %  Outputs:
@@ -13,7 +13,7 @@
 
 function SI = generateImageSpace(k_space, NFrames)
     if ndims(k_space) == 4
-        %%Inverse FT to calculate HR k-space image
+        %%Inverse FT to calculate k-space image
         SI=nan(size(k_space));
         for iFrame=1:NFrames
             SI(:,:,:,iFrame)=generateImageSpaceFrame(k_space(:,:,:,iFrame));
@@ -23,6 +23,6 @@ function SI = generateImageSpace(k_space, NFrames)
     end
 end
 
-function k_space = generateImageSpaceFrame(SI)
-    k_space=abs(fftshift(fftn(ifftshift(SI))));
+function SI = generateImageSpaceFrame(k_space)
+    SI=fftshift(fftn(ifftshift(k_space)));
 end

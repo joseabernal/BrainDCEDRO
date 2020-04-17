@@ -3,7 +3,7 @@
 %  in the input DCE-MRI acquisition.
 %  
 %  Inputs:
-%  - HR_SI: 3D/4D high resolution scan
+%  - SI: 3D/4D resolution scan
 %  - NFrames: Number of frames
 %
 %  Outputs:

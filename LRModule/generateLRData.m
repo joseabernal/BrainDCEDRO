@@ -31,4 +31,6 @@ function LR_SI = generateLRData(HR_k_space, SDnoise, NDiscard, NAcq, NFrames, ap
         %% Add white Gaussian noise
         LR_SI = add_awgnoise(LR_SI, SDnoise, NAcq, NFrames);
     end
+    
+    LR_SI = abs(LR_SI);
 end

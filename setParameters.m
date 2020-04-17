@@ -39,7 +39,7 @@ regression_type = 'linear'; %either robust or linear
 % standard deviation of the noise from background area. Second, we multiplied
 % the estimated standard deviation by sqrt(2-pi/2). Third, we computed the
 % standard deviation value for our simulations.
-SDnoise = 33.176421730654326; %Estimated noise SD value for MSSII
+SDnoise = 15.6696656810281; %Estimated noise SD value for MSSII
 
 %%Tissue parameters for each tissue type
 Hct=0.45;
