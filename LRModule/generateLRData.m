@@ -22,10 +22,16 @@ function LR_SI = generateLRData(HR_k_space, SDnoise, NDiscard, NAcq, NFrames, ap
     LR_k_space = HR_k_space(...
         NDiscard(1)+1:NDiscard(1)+NAcq(1),...
         NDiscard(2)+1:NDiscard(2)+NAcq(2),...
-        NDiscard(3)+1:NDiscard(3)+NAcq(3),:);
+        NDiscard(3)+1:NDiscard(3)+NAcq(3),:,:);
+    
+    LR_k_space_motion = nan([NAcq, NFrames]);
+    for iFrame=1:NFrames
+        LR_k_space_motion(:, :, :, iFrame) = add_motion_artifacts_rotation_kspace(...
+            LR_k_space(:, :, :, iFrame, 2), LR_k_space(:, :, :, iFrame, 1), NAcq);
+    end
 
     %% Transform to image space
-    LR_SI = generateImageSpace(LR_k_space, NFrames);
+    LR_SI = generateImageSpace(LR_k_space_motion, NFrames);
 
     if apply_awgn
         %% Add white Gaussian noise
