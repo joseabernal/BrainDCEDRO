@@ -5,10 +5,15 @@
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
 %Imaging parameters
-FOV_mm=[240 240 175]; %46 slices acquired in MSS2 (top/bottom 2 are deleted post-acquisition)
-NTrue=[480 480 350]; %dimension of image that defines the "true" object
-NAcq=[256 60 187]; %number of points acquired; for MSS2: 256x192x46
-NDes=[256 60 187]; %dimension of MSS2 image
+FOV_mm_True=[240 240 175]; %Default FOV
+NTrue=[480 480 350]; %Dimension of image that defines the "true" object
+
+FOV_mm_Des=[240, 160, 175]; %Desired FoV
+NDes=[480 40 186]; %Dimension of image that defines the object inside the desired FOV
+
+MSSII_res_mm = [0.9375, 4, 0.9375];%MSSII resolution
+NAcq = floor(FOV_mm_Des./MSSII_res_mm);%number of points acquired
+
 NFrames=21; %number of time frames, =21 for MSS2
 t_res_s=73; %temporal resolution
 t_acq_s=t_res_s*NFrames; %total acquisition time
@@ -19,9 +24,9 @@ FA_deg=12; %flip angle
 
 %Type of experiment
 experiment_idx = 4;
-apply_gross_motion = 0; %flag indicating whether to apply gross motion
-apply_motion_artefacts = 0; %flag indicating whether to induce motion artefacts
-apply_motion_correction = 0; %flag indicating whether to correct for motion
+apply_gross_motion = 1; %flag indicating whether to apply gross motion
+apply_motion_artefacts = 1; %flag indicating whether to induce motion artefacts
+apply_motion_correction = 1; %flag indicating whether to correct for motion
 apply_awgn = 1; %flag indicating whether to add white Gaussian noise or not
 apply_erosion = 0; %flag indicating whether to erode seg masks or not
 erosion_extent = 0;
@@ -79,10 +84,9 @@ SI_nonbrain = ...
      16	1175.5	1126.82	1105.59	1096	1085.18	1075.73	1072.36	1059.59	1069.18	1046.32	1057.32	1049.32	1056.82	1050.41	1042.05	1047.23	1037	1032.23	1033.23	1037.23	1029.41];
 
 %derive further parameters
-NDiscard =(NTrue - NAcq)/2; %number of k-space points to discard on either side when computing the acquired data
-HRes_mm = FOV_mm./NTrue;
-LRes_mm = FOV_mm./NDes;
+HRes_mm = FOV_mm_True./NTrue;
+LRes_mm = FOV_mm_Des./NAcq;
 
 %%Input parameters
 HR_seg_fname = ['input', filesep, 'HR_tissue_map.nii.gz'];
-LR_seg_fname = ['output', filesep, 'LR_tissue_map.nii.gz'];
+LR_seg_fname = ['input', filesep, 'LR_tissue_map.nii.gz'];
