@@ -4,15 +4,13 @@
 %  
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
-%Imaging parameters
-FOV_mm_True=[240 240 175]; %Default FOV
-NTrue=[480 480 350]; %Dimension of image that defines the "true" object
+%Imaging parameters - dimensions are AP (Freq Encoding), SI (Slice encoding), LR (Phase encoding)
+FOV_mm_True=[240 240 240]; %Default FOV
+NTrue=[480 480 480]; %Dimension of image that defines the "true" object
 
-FOV_mm_Des=[240, 160, 175]; %Desired FoV
-NDes=[480 40 186]; %Dimension of image that defines the object inside the desired FOV
-
+FOV_mm_Acq=[240, 184, 240]; %Acquired FoV
 MSSII_res_mm = [0.9375, 4, 0.9375];%MSSII resolution
-NAcq = floor(FOV_mm_Des./MSSII_res_mm);%number of points acquired
+NAcq = floor(FOV_mm_Acq./MSSII_res_mm);%number of points acquired
 
 NFrames=21; %number of time frames, =21 for MSS2
 t_res_s=73; %temporal resolution
@@ -55,7 +53,7 @@ NumRegions = 16;
 T10_s     =   [0   4.22 0.99  1.20 1.27 1.34  nan  nan  nan  nan  nan  nan  1.46  1.34  nan   nan];
 T2s0_s    =   [nan 1    1     1    1    1     1    1    1    1    1    1    1     1     1     1  ];
 PS_perMin =   [nan 0    2.75  3.91 7.25 3.85  nan  nan  nan  nan  nan  nan  0     3.85  nan   nan]*1E-4; %permeability
-vP=           [nan 0    0.57  0.72 1.05 1.20  nan  nan  nan  nan  nan  nan  100   1.20  nan   nan]*1E-2; %plasma volume fraction
+vP=           [nan 0    0.57  0.72 1.05 1.20  nan  nan  nan  nan  nan  nan  55    1.20  nan   nan]*1E-2; %plasma volume fraction
 M0=           [nan 8520 10000 9400 10700 9298 nan  nan  nan  nan  nan  nan  8817  9298  nan   nan]; %equilibrium signal (~proton density)
 
 r1_perSpermM=4.2; %R1 relaxivity;
@@ -85,7 +83,7 @@ SI_nonbrain = ...
 
 %derive further parameters
 HRes_mm = FOV_mm_True./NTrue;
-LRes_mm = FOV_mm_Des./NAcq;
+LRes_mm = FOV_mm_Acq./NAcq;
 
 %%Input parameters
 HR_seg_fname = ['input', filesep, 'HR_tissue_map.nii.gz'];

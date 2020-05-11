@@ -22,7 +22,7 @@ HR_SI_post = niftiread(HR_SI_post_fname);
 HR_SI = cat(5, HR_SI_pre, HR_SI_post);
 
 % generate low resolution (acquired) image data
-LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Des, NDes, NAcq, NFrames, apply_awgn);
+LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, NAcq, NFrames, apply_awgn);
 
 % save low resolution signal
 fname = ['LR_SI_', num2str(experiment_idx)];

@@ -23,7 +23,7 @@ if apply_erosion
 end
 
 experiment_results = zeros(size(dataset, 1), 2, 16, 6);
-for experiment_idx = 1:size(dataset, 1)
+for experiment_idx = 4
     disp(experiment_idx)
 
     % read low resolution (acquired) image data    

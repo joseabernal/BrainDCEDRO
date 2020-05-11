@@ -18,14 +18,14 @@ function composite_k_space = add_motion_artifacts_rotation_kspace(k_space_after_
     
     line_count = 0;
     composite_k_space = zeros(size(k_space_before_motion));
-    for iSlice=1:NTrue(3)
-        for iLine=1:NTrue(2)
+    for iLine=1:NTrue(3)
+        for iSlice=1:NTrue(2)
             % take only k_space_mix_threshold lines from kspace before
             % motion, and rest from after motion
             if line_count < k_space_mix_threshold
-                composite_k_space(:, iLine, iSlice) = k_space_before_motion(:, iLine, iSlice);
+                composite_k_space(:, iSlice, iLine) = k_space_before_motion(:, iSlice, iLine);
             else
-                composite_k_space(:, iLine, iSlice) = k_space_after_motion(:, iLine, iSlice);
+                composite_k_space(:, iSlice, iLine) = k_space_after_motion(:, iSlice, iLine);
             end
             line_count = line_count + 1;
         end
