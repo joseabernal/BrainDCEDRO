@@ -39,9 +39,11 @@ function [HR_Ct_mM, HR_PS_perMin, HR_vP] = generateHRConc(HR_tissue_map, vP, PS_
     for batch_start = 1:batch_size:prod(NTrue)
         elem_in_batch = batch_start:min(batch_start+batch_size-1, prod(NTrue));
 
-        Patlak_params = struct('vP', HR_vP(elem_in_batch), 'PS_perMin', HR_PS_perMin(elem_in_batch));
+        %inputs should be row vectors
+        Patlak_params = struct('vP', HR_vP(elem_in_batch).', 'PS_perMin', HR_PS_perMin(elem_in_batch).');
 
-        [HR_Ct_mM(elem_in_batch, :), ~] = DCEFunc_PKP2Conc(t_res_s, Cp_AIF_mM, Patlak_params, 'Patlak', []);
+        %PKP2Conc returns a matrix where each COL, not ROW is a time series
+        HR_Ct_mM(elem_in_batch, :) = DCEFunc_PKP2Conc(t_res_s, Cp_AIF_mM, Patlak_params, 'Patlak', []).';
     end
 
     HR_Ct_mM = reshape(HR_Ct_mM, [NTrue, NFrames]);

@@ -13,12 +13,12 @@ addpath('HRModule');
 addpath('LRModule');
 addpath('Utils');
 
-addpath(['Tools', filesep, 'spm12']); % Download from https://www.fil.ion.ucl.ac.uk/spm/software/download/
-addpath(['Tools', filesep, 'utilities']); % Provided
-addpath(['Tools', filesep, 'DCE-functions']); % Download from https://github.com/mjt320/DCE-functions
+addpath(['Software', filesep, 'spm12']); % Download from https://www.fil.ion.ucl.ac.uk/spm/software/download/
+addpath(['Software', filesep, 'utilities']); % Provided
+addpath(['Software', filesep, 'DCE-functions']); % Download from https://github.com/mjt320/DCE-functions
 
 output_folder = 'output';
 
 trans_matrix_pattern = ['input', filesep, 'TransformationMatrices', filesep, '%s.mat'];
 
-mcflirt_command = 'mcflirt -in %s -cost normmi -refvol 1';
+mcflirt_command = 'mcflirt -in %s -cost normmi -refvol 0';

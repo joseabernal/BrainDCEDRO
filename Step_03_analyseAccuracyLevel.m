@@ -32,7 +32,7 @@ for experiment_idx = 4
         
         LR_SI_dense = niftiread(LR_fname);
     else
-        LR_corr_fname = [output_folder, filesep, 'LR_SI_', num2str(experiment_idx), '_mcf.nii.gz'];
+        LR_corr_fname = [output_folder, filesep, 'LR_SI_', num2str(experiment_idx), '_mcf.nii'];
     
         LR_SI_dense = niftiread(LR_corr_fname);
     end        

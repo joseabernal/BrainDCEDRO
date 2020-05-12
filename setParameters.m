@@ -9,7 +9,7 @@ FOV_mm_True=[240 240 240]; %Default FOV
 NTrue=[480 480 480]; %Dimension of image that defines the "true" object
 
 FOV_mm_Acq=[240, 184, 240]; %Acquired FoV
-MSSII_res_mm = [0.9375, 4, 0.9375];%MSSII resolution
+MSSII_res_mm = [0.9375, 4, 1.25];%MSSII resolution
 NAcq = floor(FOV_mm_Acq./MSSII_res_mm);%number of points acquired
 
 NFrames=21; %number of time frames, =21 for MSS2

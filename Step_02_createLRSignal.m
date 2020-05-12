@@ -30,6 +30,6 @@ save_scan({LR_SI}, {fname}, NAcq, output_folder, LRes_mm);
 
 if apply_motion_correction
     % use MCFLIRT to correct for bulk motion
-    corr_fname = [output_folder, filesep, fname, '_mcf.nii.gz'];
+    corr_fname = [output_folder, filesep, fname, '_mcf.nii'];
     correctBulkMotion(mcflirt_command, [output_folder, filesep, fname], corr_fname);
 end
