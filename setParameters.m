@@ -21,13 +21,15 @@ TE_s=3.1e-3;
 FA_deg=12; %flip angle
 
 %Type of experiment
-experiment_idx = 4;
 apply_gross_motion = 1; %flag indicating whether to apply gross motion
-apply_motion_artefacts = 1; %flag indicating whether to induce motion artefacts
+apply_motion_artefacts = 1; %flag indicating whether to induce motion artefacts.
+% Of note, motion artefacts will only appear if apply_gross_motion = 1.
+
 apply_motion_correction = 1; %flag indicating whether to correct for motion
+use_noise_estimation = 0; %flag indicating whether to use noise estimation
 apply_awgn = 1; %flag indicating whether to add white Gaussian noise or not
 apply_erosion = 0; %flag indicating whether to erode seg masks or not
-erosion_extent = 0;
+erosion_extent = 1; %radius in voxels of the erosion element (requires apply_erosion=1)
 regression_type = 'linear'; %either robust or linear
 
 % Noise extent
@@ -42,19 +44,20 @@ regression_type = 'linear'; %either robust or linear
 % standard deviation of the noise from background area. Second, we multiplied
 % the estimated standard deviation by sqrt(2-pi/2). Third, we computed the
 % standard deviation value for our simulations.
-SDnoise = 15.6696656810281; %Estimated noise SD value for MSSII
+SDnoise = 7.0849; %Estimated noise SD 7.0849 value for MSSII
 
 %%Tissue parameters for each tissue type
 Hct=0.45;
-[t_s, Cp_AIF_mM] = DCEFunc_getParkerModAIF(t_res_s,t_acq_s,t_start_s,Hct); %includes pre-contrast data points (zeros)
+[t_s, Cp_AIF_mM] = DCEFunc_getParkerModAIF(t_res_s,t_acq_s,t_start_s,Hct,'MSS2'); %includes pre-contrast data points (zeros)
 
-%BG CSF NAWM WMH RSL CGM Dura Muscle Bone SkullDiploe SkullInner SkullOuter Vessel DGM Skin+Connective_tissue Adipose_tissue
-NumRegions = 16;
-T10_s     =   [0   4.22 0.99  1.20 1.27 1.34  nan  nan  nan  nan  nan  nan  1.46        1.34  nan   nan];
-T2s0_s    =   [nan 1    1     1    1    1     1    1    1    1    1    1    1           1     1     1  ];
-PS_perMin =   [nan 0    2.75  3.91 7.25 3.85  nan  nan  nan  nan  nan  nan  0           3.85  nan   nan]*1E-4; %permeability
-vP=           [nan 0    0.57  0.72 1.05 1.20  nan  nan  nan  nan  nan  nan  (1-Hct)*100 1.20  nan   nan]*1E-2; %plasma volume fraction
-M0=           [nan 8520 10000 9400 10700 9298 nan  nan  nan  nan  nan  nan  8817        9298  nan   nan]; %equilibrium signal (~proton density)
+%BG CSF NAWM WMH RSL CGM Dura Muscle Bone SkullDiploe SkullInner SkullOuter
+%Vessel DGM Skin+Connective_tissue Adipose_tissue Eyes
+NumRegions = 17;
+T10_s     =   [0   4.22 0.99  1.20 1.27 1.34  nan  nan  nan  nan  nan  nan  1.46        1.34  nan   nan nan];
+T2s0_s    =   [nan 1    1     1    1    1     1    1    1    1    1    1    1           1     1     1   1  ];
+PS_perMin =   [nan 0    2.75  3.91 7.25 3.85  nan  nan  nan  nan  nan  nan  0           3.85  nan   nan nan]*1E-4; %permeability
+vP=           [nan 0    0.57  0.72 1.05 1.20  nan  nan  nan  nan  nan  nan  (1-Hct)*100 1.20  nan   nan nan]*1E-2; %plasma volume fraction
+M0=           [nan 8520 10000 9400 10700 9298 nan  nan  nan  nan  nan  nan  8817        9298  nan   nan nan]; %equilibrium signal (~proton density)
 
 r1_perSpermM=4.2; %R1 relaxivity;
 r2_perSpermM=0; %ignore T2* effects for now, 6.7s-1mM-1 otherwise
@@ -71,6 +74,7 @@ r2_perSpermM=0; %ignore T2* effects for now, 6.7s-1mM-1 otherwise
 % 12 - Skull inner table
 % 15 - Skin
 % 16 - Adipose tissue
+% 17 - Eyes
 SI_nonbrain = ...
    [7 431.415 784.151 763.019 722.415 711 705.226 677.094 666.585 663.604 658.019 632.434 623.642 630.811 635.226 632.132 623.113 616.792 628.943 628.623 610.038 620.943
     8 413.278 501.784 550.323 543.775 537.826 545.594 546.445 540.14 539.147 537.195 537.142 540.388 545.158 550.952 533.211 528.773 533.289 525.761 529.172 529.782 525.844
@@ -79,7 +83,8 @@ SI_nonbrain = ...
     11 114.988 136.073 140.061 147.366 144.89 154.146 152.512 157.573 152.915 160.817 158.805 163.634 164.72 156.646 170.756 167.683 163.817 174.5 168.305 156.598 177.159
     12 170.905 213.919 211.378 212.946 213.054 218.959 214.541 218.446 222.284 223.851 225.824 223.838 227.297 220.595 237 221.919 221.122 217 221.324 221.135 234.905
     15 833.631 1048.38 1197.93 1249.45 1279.36 1299.43 1330.32 1335.45 1346.75 1347.94 1356.98 1354.86 1342.33 1340.33 1331.76 1327.06 1325.38 1324.11 1313.58 1303.29 1318.35
-    16 1064.07 1030.97 1028.85 1029.18 1027.25 1030.37 1029.13 1027.79 1029.26 1028.55 1024.43 1018.8 1018.14 1009.05 1017.1 1016.91 1018.43 1009.68 1009.15 1009.85 1006.34];
+    16 1064.07 1030.97 1028.85 1029.18 1027.25 1030.37 1029.13 1027.79 1029.26 1028.55 1024.43 1018.8 1018.14 1009.05 1017.1 1016.91 1018.43 1009.68 1009.15 1009.85 1006.34
+    17 309.60 377.76 321.89 333.62 318.76 329.80 349.59 354.63 343.17 332.92 326.33 385.35 350.94 338.10 341.60 295.70 309.19 333.52 325.42 308.74 356.733];
 
 %derive further parameters
 HRes_mm = FOV_mm_True./NTrue;
