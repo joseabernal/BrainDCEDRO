@@ -14,7 +14,7 @@
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
 function tissue_map_eroded = erode_seg_map(tissue_map, relevant_regions, erosion_extent, NumRegions)
-    disk = strel('disk', erosion_extent);
+    disk = strel('sphere', erosion_extent);
     tissue_map_eroded = zeros(size(tissue_map));
     for c = 1:NumRegions
         if any(ismember(relevant_regions, c))
