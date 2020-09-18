@@ -24,8 +24,8 @@ function LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, 
     for iFrame=1:NFrames
         %% Adjust FOV and acquisition matrices
         LR_k_space = cat(4, ...
-            modifyFOV(HR_SI(:, :, :, iFrame, 1), FOV_mm_True, NTrue, FOV_mm_Acq, NAcq, NFrames),...
-            modifyFOV(HR_SI(:, :, :, iFrame, 2), FOV_mm_True, NTrue, FOV_mm_Acq, NAcq, NFrames));
+            resample(HR_SI(:, :, :, iFrame, 1), FOV_mm_True, NTrue, FOV_mm_Acq, NAcq, NFrames),...
+            resample(HR_SI(:, :, :, iFrame, 2), FOV_mm_True, NTrue, FOV_mm_Acq, NAcq, NFrames));
 
         %% Induce motion artefacts
         % Combine pre and post movement k-spaces to produce motion
