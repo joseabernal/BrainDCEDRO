@@ -52,17 +52,13 @@ else
 end
 
 % Create 4D high res signals for the entire cohort
-for experiment_idx=4
+for experiment_idx=1:205
     trans_matrices_fname = sprintf(trans_matrix_pattern, num2str(experiment_idx));
     
     if ~exist(trans_matrices_fname, 'file')
         continue
     end
 
-    % Create name of output files
-    HR_SI_fname_pattern = 'HR_SI_%s';
-    HR_SI_fname = sprintf(HR_SI_fname_pattern, num2str(experiment_idx));
-        
     % Generate random transformation to set initial head position
     origpos = generateRandomTransformation(5, 5);
 
@@ -74,6 +70,9 @@ for experiment_idx=4
     % Apply random starting position
     HR_SI = applyGrossMotion(HR_SI_orig, orig_transformation_matrices, NTrue, NFrames);
 
+    % Create output filename and save signal
+    HR_SI_fname_pattern = 'HR_SI_%s';
+    HR_SI_fname = sprintf(HR_SI_fname_pattern, num2str(experiment_idx));
     save_scan({HR_SI}, {HR_SI_fname}, NTrue, output_folder, HRes_mm)
     
     % Read transformation matrices
@@ -81,23 +80,17 @@ for experiment_idx=4
         trans_matrix_pattern, experiment_idx);
     
     trans_matrices_pre = {affine3d(eye(4)), trans_matrices_post{1:end-1}};
-
-    % Create name of output files
-    HR_SI_motion_fname_pattern = 'HR_SI_motion_%s_%s';
-    HR_SI_motion_pre_fname = sprintf(HR_SI_motion_fname_pattern, num2str(experiment_idx), 'pre');
-    HR_SI_motion_post_fname = sprintf(HR_SI_motion_fname_pattern, num2str(experiment_idx), 'post');
     
     % Apply gross motion to high resolution signal using the transformations 
     % determined from patient data
-    HR_SI_motion_pre = applyGrossMotion(...
-        HR_SI, trans_matrices_pre, NTrue, NFrames);
-
+    [HR_SI_motion_pre, HR_SI_motion_post] = induceMotionHRSignal(...
+        HR_SI, trans_matrices_pre, trans_matrices_post, NTrue, NFrames, ...
+        apply_gross_motion, apply_motion_artefacts);
+    
+    % Create output filenames and save signals
+    HR_SI_motion_fname_pattern = 'HR_SI_motion_%s_%s';
+    HR_SI_motion_pre_fname = sprintf(HR_SI_motion_fname_pattern, num2str(experiment_idx), 'pre');
+    HR_SI_motion_post_fname = sprintf(HR_SI_motion_fname_pattern, num2str(experiment_idx), 'post');
     save_scan({HR_SI_motion_pre}, {HR_SI_motion_pre_fname}, NTrue, output_folder, HRes_mm)
-
-    % Apply gross motion to high resolution signal using the transformations 
-    % determined from patient data
-    HR_SI_motion_post = applyGrossMotion(...
-        HR_SI, trans_matrices_post, NTrue, NFrames);
-
     save_scan({HR_SI_motion_post}, {HR_SI_motion_post_fname}, NTrue, output_folder, HRes_mm)
 end

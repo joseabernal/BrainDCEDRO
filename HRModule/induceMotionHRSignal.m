@@ -4,7 +4,7 @@
 %  position and the rest when it moved to another one.
 %  
 %  Inputs:
-%  - HR_SI_clean: 4D high resolution signal-time curves
+%  - HR_SI: 4D high resolution signal-time curves
 %  - trans_matrices_pre: Transformation matrices that give information of
 %  the head position at the begining of each frame
 %  - trans_matrices_post: Transformation matrices that give information of
@@ -21,28 +21,26 @@
 %
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
-function HR_SI_motion = induceMotionHRSignal(HR_SI_clean, trans_matrices_pre, trans_matrices_post, NTrue, NFrames, apply_gross_motion, apply_motion_artefacts)
-    HR_SI_motion = zeros([NTrue, NFrames, 2]);
+function [HR_SI_motion_pre, HR_SI_motion_post] = induceMotionHRSignal(HR_SI, trans_matrices_pre, trans_matrices_post, NTrue, NFrames, apply_gross_motion, apply_motion_artefacts)
     if ~apply_gross_motion
         % no modification
-        HR_SI_motion(:, :, :, :, 1) = HR_SI_clean;
-        HR_SI_motion(:, :, :, :, 2) = HR_SI_clean;
+        HR_SI_motion_pre = HR_SI;
+        HR_SI_motion_post = HR_SI;
     else
         if ~apply_motion_artefacts
-            for iFrame=1:NFrames
-                % apply gross motion to high resolution signal
-                HR_SI_motion(:, :, :, iFrame, 1) = applyGrossMotion(...
-                    HR_SI_clean(:, :, :, iFrame, 1), trans_matrices_post{iFrame}, NTrue, NFrames);
-            end
-            HR_SI_motion(:, :, :, :, 2) = HR_SI_motion(:, :, :, iFrame, 1);
+            % Pre and post HR SI are the same, motion artefacts do not
+            % occur during acquisition
+            HR_SI_motion_post = applyGrossMotion(...
+                HR_SI, trans_matrices_post, NTrue, NFrames);
+            HR_SI_motion_pre = HR_SI_motion_post;
         else
-            for iFrame=1:NFrames
-                % apply gross motion to high resolution signal
-                HR_SI_motion(:, :, :, iFrame, 1) = applyGrossMotion(...
-                    HR_SI_clean(:, :, :, iFrame), trans_matrices_pre{iFrame}, NTrue, NFrames);
-                HR_SI_motion(:, :, :, iFrame, 2) = applyGrossMotion(...
-                    HR_SI_clean(:, :, :, iFrame), trans_matrices_post{iFrame}, NTrue, NFrames);
-            end
+            % Pre and post HR SI are different, motion artefacts occur
+            % during acquisition
+            HR_SI_motion_pre = applyGrossMotion(...
+                HR_SI, trans_matrices_pre, NTrue, NFrames);
+
+            HR_SI_motion_post = applyGrossMotion(...
+                HR_SI, trans_matrices_post, NTrue, NFrames);
         end
     end
 end
