@@ -25,8 +25,6 @@ apply_gross_motion = 1; %flag indicating whether to apply gross motion
 apply_motion_artefacts = 1; %flag indicating whether to induce motion artefacts.
 % Of note, motion artefacts will only appear if apply_gross_motion = 1.
 
-apply_motion_correction = 1; %flag indicating whether to correct for motion
-use_noise_estimation = 0; %flag indicating whether to use noise estimation
 apply_awgn = 1; %flag indicating whether to add white Gaussian noise or not
 apply_erosion = 0; %flag indicating whether to erode seg masks or not
 erosion_extent = 1; %radius in voxels of the erosion element (requires apply_erosion=1)
