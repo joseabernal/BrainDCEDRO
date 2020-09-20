@@ -1,5 +1,5 @@
-%% Modify FOV and resample accordingly
-%  Modify field of view to mimic slab-selective RF excitation
+%% Resample signal
+%  Modify field of view to mimic slab-selective RF excitation and resample signal
 %  
 %  Inputs:
 %  - HR_SI: 3D high resolution image
@@ -14,7 +14,7 @@
 %
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
-function LR_k = modifyFOV(HR_SI, FoV_mm_True, NTrue, FoV_mm_Acq, NAcq, NFrames)
+function LR_k = resample(HR_SI, FoV_mm_True, NTrue, FoV_mm_Acq, NAcq, NFrames)
     res_mm_True=FoV_mm_True./NTrue; %HR resolution
     res_mm_Acq=FoV_mm_Acq./NAcq; %LR resolution
 
