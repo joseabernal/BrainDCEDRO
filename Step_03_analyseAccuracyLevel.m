@@ -29,8 +29,8 @@ end
 % PS and vP.
 parameter_averaging_results = zeros(size(dataset, 1), NumRegions, 2);
 signal_averaging_results = zeros(size(dataset, 1), NumRegions, 2);
-for experiment_idx = 1:size(dataset, 1)    
-    LR_SI_fname = [output_folder, filesep, 'LR_SI_', num2str(experiment_idx), '_mcf.nii'];
+for experiment_idx = 1   
+    LR_SI_fname = [output_folder, filesep, 'LR_SI_', num2str(experiment_idx), '_mcf_tf.nii.gz'];
 
     if ~exist(LR_SI_fname, 'file')
         continue
