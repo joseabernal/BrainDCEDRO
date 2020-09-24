@@ -16,54 +16,64 @@ setParameters;
 
 output_folder = 'output';
 
-LR_tissue_map = generateLRSegMap(LR_seg_fname); % generate low res segmentation map
+% generate low res segmentation map
+LR_tissue_map = generateLRSegMap(LR_seg_fname);
 
+% erode segmentation map
 if apply_erosion
-    LR_tissue_map = erode_seg_map(LR_tissue_map, [3,4,5,6], erosion_extent, NumRegions);
+    LR_tissue_map = erode_seg_map(LR_tissue_map, erosion_extent, NumRegions);
 end
 
-experiment_results = zeros(size(dataset, 1), 2, 16, 6);
-for experiment_idx = 4
+% Results are stored in these two variables. The first, second, and third
+% dimensions correspond to the patient number, region of interest, and both
+% PS and vP.
+parameter_averaging_results = zeros(size(dataset, 1), NumRegions, 2);
+signal_averaging_results = zeros(size(dataset, 1), NumRegions, 2);
+for experiment_idx = 1:size(dataset, 1)    
+    LR_SI_fname = [output_folder, filesep, 'LR_SI_', num2str(experiment_idx), '_mcf.nii'];
+
+    if ~exist(LR_SI_fname, 'file')
+        continue
+    end
+    
     disp(experiment_idx)
-
-    % read low resolution (acquired) image data    
-    if ~apply_motion_correction
-        LR_fname = [output_folder, filesep, 'LR_SI_', num2str(experiment_idx)];
-        
-        LR_SI_dense = niftiread(LR_fname);
-    else
-        LR_corr_fname = [output_folder, filesep, 'LR_SI_', num2str(experiment_idx), '_mcf.nii'];
     
-        LR_SI_dense = niftiread(LR_corr_fname);
-    end        
+    % read low resolution (acquired) image data
+    LR_SI = niftiread(LR_SI_fname);
 
-    % mask low resolution to obtain signal of regions of interest
-    LR_SI_dense = LR_SI_dense .* (LR_tissue_map > 1 & (LR_tissue_map < 7 | LR_tissue_map == 14));
+    % mask low resolution to obtain signal of brain tissues only
+    LR_SI = LR_SI .* (LR_tissue_map > 1 & (LR_tissue_map < 7 | LR_tissue_map == 14));
     
-    % fit PS and vp
-    [LR_PS_perMin_dense, LR_vP_dense] = fitLRData(...
-        LR_SI_dense, Cp_AIF_mM, LR_tissue_map, T10_s, TR_s,TE_s, FA_deg, ...
+    % calculate PS and vp voxel-wise
+    [LR_PS_perMin_voxel_wise, LR_vP_voxel_wise] = fitLRData(...
+        LR_SI, Cp_AIF_mM, LR_tissue_map, T10_s, TR_s,TE_s, FA_deg, ...
         r1_perSpermM,r2_perSpermM, t_res_s, NAcq, false, regression_type);
 
-    save_scan({LR_PS_perMin_dense, LR_vP_dense}, ...
+    % summarise PS and vP values per region of interest
+    LR_PS_perMin_parameter_averaging = organiseParamsPerROI(...
+        LR_PS_perMin_voxel_wise, LR_tissue_map, NumRegions);
+    LR_vP_dense_parameter_averaging = organiseParamsPerROI(...
+        LR_vP_voxel_wise, LR_tissue_map, NumRegions);
+
+    % evaluate deviation using the parameter averaging approach
+    parameter_averaging_results(experiment_idx, :, :) = evaluateDeviation(...
+        LR_PS_perMin_parameter_averaging, LR_vP_dense_parameter_averaging, PS_perMin, vP, NumRegions);
+    
+    % save PS and vP maps
+    save_scan({LR_PS_perMin_voxel_wise, LR_vP_voxel_wise}, ...
         {['LR_PS_perMin_', num2str(experiment_idx)], ['LR_vP_', num2str(experiment_idx)]}, ...
         NAcq, output_folder, LRes_mm);
     
     % summarise signal per region of interest
-    LR_SI_region = summariseSIPerROI(...
-        LR_SI_dense, LR_tissue_map, NAcq, NFrames, NumRegions);
+    LR_SI_signal_averaging = summariseSIPerROI(...
+        LR_SI, LR_tissue_map, NAcq, NFrames, NumRegions);
 
-    % fit PS and vp
-    [LR_PS_perMin_region, LR_vP_region] = fitLRData(...
-        LR_SI_region, Cp_AIF_mM, LR_tissue_map, T10_s, TR_s,TE_s, FA_deg, ...
-        r1_perSpermM,r2_perSpermM, t_res_s, NAcq, true, regression_type);
-
-    LR_PS_perMin_dense_summ = organiseParamsPerROI(LR_PS_perMin_dense, LR_tissue_map, NumRegions);
-    LR_vP_dense_summ = organiseParamsPerROI(LR_vP_dense, LR_tissue_map, NumRegions);
+    % calculate PS and vp region-wise
+    [LR_PS_perMin_signal_averaging, LR_vP_signal_averaging] = fitLRData(...
+        LR_SI_signal_averaging, Cp_AIF_mM, LR_tissue_map, T10_s, TR_s,TE_s, FA_deg, ...
+        r1_perSpermM,r2_perSpermM, t_res_s, NAcq, true, regression_type);    
     
-    % evaluate deviation
-    experiment_results(experiment_idx, 1, :, :) = evaluateDeviation(...
-        LR_PS_perMin_dense_summ, LR_vP_dense_summ, PS_perMin, vP, NumRegions);
-    experiment_results(experiment_idx, 2, :, :) = evaluateDeviation(...
-        LR_PS_perMin_region, LR_vP_region, PS_perMin, vP, NumRegions);
+    % evaluate deviation using the signal averaging approach
+    signal_averaging_results(experiment_idx, :, :) = evaluateDeviation(...
+        LR_PS_perMin_signal_averaging, LR_vP_signal_averaging, PS_perMin, vP, NumRegions);
 end
