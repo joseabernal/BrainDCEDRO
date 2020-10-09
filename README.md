@@ -1,6 +1,6 @@
 # A novel digital reference object for DCE-MRI measurement of subtle blood-brain barrier leakage
 
-## Cite
+## Preprint available
 If you use our computational model in your research, please quote the preprint:
 
 > Bernal, J.; Valdés-Hernández, M.; Escudero, J.; Heye, A.; Sakka, E.; Armitage, P.; Makin, S.; Touyz, R.; Wardlaw, J.; Thrippleton, M. A Four-Dimensional Computational Model of Dynamic Contrast-Enhanced Magnetic Resonance Imaging Measurement of Subtle Blood-Brain Barrier Leakage. Preprints 2020, 2020100200 (doi: 10.20944/preprints202010.0200.v1).
