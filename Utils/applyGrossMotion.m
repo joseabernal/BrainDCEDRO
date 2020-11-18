@@ -16,7 +16,7 @@
 function SI = applyGrossMotion(SI, trans_matrices, Dim, NFrames)
     if ndims(SI) == 4
         %%Apply gross motion to each frame
-        for iFrame = 2:NFrames
+        for iFrame = 1:NFrames
             SI(:, :, :, iFrame) = applyGrossMotionFrame(SI(:, :, :, iFrame), trans_matrices{iFrame}, Dim);
         end
     else

@@ -30,7 +30,7 @@ for experiment_idx=1:205
     HR_SI = cat(5, HR_SI_pre, HR_SI_post);
 
     % generate low resolution (acquired) image data
-    LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, NAcq, NFrames, apply_awgn);
+    LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, NAcq, NFrames, apply_noise);
 
     % save low resolution signal
     fname = ['LR_SI_', num2str(experiment_idx)];

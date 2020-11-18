@@ -1,5 +1,5 @@
-%% Add additive white Gaussian noise to input signal
-%  Add additive white Gaussian noise to input DCE-MRI signal.
+%% Add Riccian noise to k-space
+%  Add Rician noise to input DCE-MRI k-space.
 %  We represent the signal-to-noise ratio (SNR) as the quotient
 %  between the mean signal value and the standard deviation of the
 %  background noise. The SNR of the real scans should be similar to that of
@@ -13,22 +13,24 @@
 %  standard deviation value for our simulations.
 %  
 %  Inputs:
-%  - SI: DCE-MRI signal
+%  - k_space: Input k-space
 %  - SDnoise: Standard deviation of the noise
 %  - NAcq: Number of acquired
 %  - NFrames: Number of frames
 
 %  Outputs:
-%   - SI_noisy: Noise DCE-MRI signal
+%   - k_space_noisy: Noisy k-space
 %
-% (c) Jose Bernal and Michael J. Thrippleton 2019
+% (c) Jose Bernal and Michael J. Thrippleton 2020
 
-function SI_noisy=add_awgnoise(SI, SDnoise, NAcq, NFrames)
-    SD = SDnoise/sqrt(2-pi/2);
+function k_space_noisy=add_noise(k_space, SDnoise, NAcq, NFrames)
+    N_voxels = prod(NAcq);
 
-    %% Generate additive white Gaussian noise (AWGN)
-    AWGN = normrnd(0, SD, [NAcq, NFrames]) + 1i*normrnd(0, SD, [NAcq, NFrames]);
+    SD = SDnoise/sqrt(2-pi/2) * 1/sqrt(2*N_voxels);
+
+    %% Generate Rician noise
+    noise = normrnd(0, SD, [NAcq, NFrames]) + 1i*normrnd(0, SD, [NAcq, NFrames]);
     
-    %% Add additive white Gaussian noise
-    SI_noisy = SI + AWGN;
+    %% Add noise
+    k_space_noisy = k_space + noise;
 end
