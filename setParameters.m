@@ -60,21 +60,9 @@ M0=           [nan 8520 10000 9400 10700 9298 nan  nan  nan  nan  nan  nan  8817
 r1_perSpermM=4.2; %R1 relaxivity;
 r2_perSpermM=0; %ignore T2* effects for now, 6.7s-1mM-1 otherwise
 
-% 2D matrix with signal profile for each non-brain structure. Each row 
-% corresponds to the tissue class number, followed by the mean intensity in
-% each frame.
-% The tissue class number and its description are the following:
-% 7  - Meninges
-% 8  - Muscles and eyes
-% 9  - Mandible and vertebrae
-% 10 - Skull diploe
-% 11 - Skull outer table
-% 12 - Skull inner table
-% 15 - Skin
-% 16 - Adipose tissue
-% 17 - Eyes
-SI0_nonbrain = [431.415; 413.278; 517.882; 367.306; 114.988; 170.905; 833.631; 1064.07; 309.60];
-SI_nonbrain = getNonBrainSignals(t_s, SI0_nonbrain);
+
+%% Create extra-cerebral signal-time curves
+SI_nonbrain = getNonBrainSignals(t_s);
 
 %derive further parameters
 HRes_mm = FOV_mm_True./NTrue;
