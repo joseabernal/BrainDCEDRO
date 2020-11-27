@@ -42,7 +42,5 @@ function LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, 
     end
     
     %% Transform to image space
-    LR_SI = generateImageSpace(LR_k_space_acq, NFrames);
-
-    LR_SI = abs(LR_SI);
+    LR_SI = abs(generateImageSpace(LR_k_space_acq, NFrames));
 end
