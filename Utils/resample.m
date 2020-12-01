@@ -1,5 +1,5 @@
-%% Resample signal
-%  Modify field of view to mimic slab-selective RF excitation and resample signal
+%% Modify FOV and resample accordingly
+%  Modify field of view to mimic slab-selective RF excitation
 %  
 %  Inputs:
 %  - HR_SI: 3D high resolution image

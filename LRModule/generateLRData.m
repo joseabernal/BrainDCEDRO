@@ -12,15 +12,17 @@
 %  - NDes: Spatial dimensions of desired FOV region
 %  - NAcq: Spatial dimensions of acquired images
 %  - NFrames: Number of frames
-%  - apply_noise: flag indicating whether to add Rician noise or not
+%  - apply_noise: flag indicating whether to add noise or not
+%  - apply_lowpass: flag indicating whether to apply a low pass filter on
+%                   the acquired k-space
 
 %  Outputs:
 %   - LR_SI: "Acquired" 4D (scanning resolution) DCE-MRI signal
 %
-% (c) Jose Bernal and Michael J. Thrippleton 2019
+% (c) Jose Bernal and Michael J. Thrippleton 2020
 
-function LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, NAcq, NFrames, apply_noise)   
-    LR_k_space_acq = nan([NAcq, NFrames]);
+function LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, NAcq, NFrames, apply_noise, apply_lowpass)   
+    LR_k_space_acquired = nan([NAcq, NFrames]);
     for iFrame=1:NFrames
         %% Adjust FOV and acquisition matrices
         LR_k_space = cat(4, ...
@@ -35,12 +37,39 @@ function LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, 
         
         %% Add noise
         if apply_noise
-            LR_k_space_acq(:, :, :, iFrame) = add_noise(LR_k_space_motion, SDnoise, NAcq, 1);
+            LR_k_space_acquired(:, :, :, iFrame) = add_noise(LR_k_space_motion, SDnoise, NAcq);
         else
-            LR_k_space_acq(:, :, :, iFrame) = LR_k_space_motion;
+            LR_k_space_acquired(:, :, :, iFrame) = LR_k_space_motion;
+        end
+        
+        %% Apply low pass filter to reduce ringing artefacts
+        if apply_lowpass
+            res_mm_Acq=FoV_mm_Acq./NAcq; %LR resolution
+            k_FoV_perMM_LR=1./res_mm_Acq; %LR FoV in k-space
+            k_res_perMM_LR=1./FoV_mm_Acq; %LR resolution in k-space
+
+            LR_k_space_acquired = LR_k_space_acquired .* createBesselWindow3D(k_FoV_perMM_LR, k_res_perMM_LR);
         end
     end
-    
+
     %% Transform to image space
-    LR_SI = abs(generateImageSpace(LR_k_space_acq, NFrames));
+    LR_SI = abs(generateImageSpace(LR_k_space_acquired, NFrames));
+end
+
+function W = createBesselWindow3D(k_FoV_perMM, k_res_perMM)
+    W1 = bessel(k_FoV_perMM(1), k_res_perMM(1));
+    W2 = bessel(k_FoV_perMM(2), k_res_perMM(2));
+    W3 = bessel(k_FoV_perMM(3), k_res_perMM(3));
+    
+    W = (W1'.*W2).*reshape(W3, 1, 1, []);
+end
+
+function W = bessel(k_FoV_perMM, k_res_perMM)
+    n = 5; % filter order
+    D0 = k_FoV_perMM / 2; %cutoff value
+    D = (-k_FoV_perMM/2):k_res_perMM:(k_FoV_perMM/2-k_res_perMM);
+
+    [b, a] = besself(n, D0);
+
+    W = freqs(b, a, D);
 end

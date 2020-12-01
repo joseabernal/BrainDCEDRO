@@ -25,8 +25,9 @@ apply_gross_motion = 1; %flag indicating whether to apply gross motion
 apply_motion_artefacts = 1; %flag indicating whether to induce motion artefacts.
 % Of note, motion artefacts will only appear if apply_gross_motion = 1.
 
+apply_lowpass = 1; %flag indicating whether to apply a low pass filter or not
 apply_noise = 1; %flag indicating whether to add Rician noise or not
-apply_erosion = 0; %flag indicating whether to erode seg masks or not
+apply_erosion = 1; %flag indicating whether to erode seg masks or not
 erosion_extent = 1; %radius in voxels of the erosion element (requires apply_erosion=1)
 regression_type = 'linear'; %either robust or linear
 
@@ -48,8 +49,24 @@ SDnoise = 7.0849; %Estimated noise SD 7.0849 value for MSSII
 Hct=0.45;
 [t_s, Cp_AIF_mM] = DCEFunc_getParkerModAIF(t_res_s,t_acq_s,t_start_s,Hct,'MSS2'); %includes pre-contrast data points (zeros)
 
-%BG CSF NAWM WMH RSL CGM Dura Muscle Bone SkullDiploe SkullInner SkullOuter
-%Vessel DGM Skin+Connective_tissue Adipose_tissue Eyes
+% Tissue parameters per class
+%  1  - Background
+%  2  - Cerebrospinal fluid
+%  3  - Normal-appearing white matter
+%  4  - White matter hyperintensity
+%  5  - Recent stroke lesion
+%  6  - Cortical grey matter
+%  7  - Meninges
+%  8  - Muscles and eyes
+%  9  - Mandible and vertebrae
+%  10 - Skull diploe
+%  11 - Skull outer table
+%  12 - Skull inner table
+%  13 - Blood vessels
+%  14 - Deep grey matter
+%  15 - Skin
+%  16 - Adipose tissue
+%  17 - Eyes
 NumRegions = 17;
 T10_s     =   [0   4.22 0.99  1.20 1.27 1.34  nan  nan  nan  nan  nan  nan  1.46        1.34  nan   nan nan];
 T2s0_s    =   [nan 1    1     1    1    1     1    1    1    1    1    1    1           1     1     1   1  ];
@@ -60,14 +77,13 @@ M0=           [nan 8520 10000 9400 10700 9298 nan  nan  nan  nan  nan  nan  8817
 r1_perSpermM=4.2; %R1 relaxivity;
 r2_perSpermM=0; %ignore T2* effects for now, 6.7s-1mM-1 otherwise
 
-
-%% Create extra-cerebral signal-time curves
+% Create extra-cerebral signal-time curves
 SI_nonbrain = getNonBrainSignals(t_s);
 
-%derive further parameters
+% Derive further parameters
 HRes_mm = FOV_mm_True./NTrue;
 LRes_mm = FOV_mm_Acq./NAcq;
 
-%%Input parameters
+% Input parameters
 HR_seg_fname = ['input', filesep, 'HR_tissue_map.nii.gz'];
 LR_seg_fname = ['input', filesep, 'LR_tissue_map.nii.gz'];

@@ -28,12 +28,15 @@ for experiment_idx=1:205
     HR_SI_pre = niftiread(HR_SI_pre_fname);
     HR_SI_post = niftiread(HR_SI_post_fname);
     HR_SI = cat(5, HR_SI_pre, HR_SI_post);
+    
+    clear HR_SI_pre;
+    clear HR_SI_post;
 
     % generate low resolution (acquired) image data
-    LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, NAcq, NFrames, apply_noise);
+    LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, NAcq, NFrames, apply_noise, apply_lowpass);
 
     % save low resolution signal
-    fname = ['LR_SI_', num2str(experiment_idx)];
+    fname = ['LR_SI_', num2str(experiment_idx), '_smooth_sf'];
     save_scan({LR_SI}, {fname}, NAcq, output_folder, LRes_mm);
 
     % use FSL to correct for bulk motion

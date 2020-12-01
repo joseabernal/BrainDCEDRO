@@ -32,7 +32,7 @@ function W = createWindow3D(FoV_mm_HR, FoV_mm_LR, res_mm_HR, is_modified)
         W3 = no_filter(FoV_mm_HR(3), res_mm_HR(3));
     end
 
-    W = (W1.*W2.').*permute(W3, [3, 2, 1]);
+    W = (W1.*W2').*reshape(W3, 1, 1, []);
 end
 
 %Creates a constant signal until FoV_mm_HR/2
