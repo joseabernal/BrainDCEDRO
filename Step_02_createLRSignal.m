@@ -33,10 +33,11 @@ for experiment_idx=1:205
     clear HR_SI_post;
 
     % generate low resolution (acquired) image data
-    LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, NAcq, NFrames, apply_noise, apply_lowpass);
+    LR_SI = generateLRData(...
+        HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, NAcq, NFrames, apply_noise, apply_lowpass);
 
     % save low resolution signal
-    fname = ['LR_SI_', num2str(experiment_idx), '_smooth_sf'];
+    fname = ['LR_SI_', num2str(experiment_idx), ''];
     save_scan({LR_SI}, {fname}, NAcq, output_folder, LRes_mm);
 
     % use FSL to correct for bulk motion
