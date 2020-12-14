@@ -30,7 +30,7 @@
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
 function [LR_PS_perMin, LR_vP] = fitLRData(LR_SI, Cp_AIF_mM, LR_tissue_map, T10_s, TR_s,TE_s, FA_deg, r1_perSpermM, r2_perSpermM, t_res_s, NDes, region_wise_computations, regression_type)
-    fit_options = struct('NIgnore',0,'PatlakFastRegMode',regression_type);
+    fit_options = struct('NIgnore', 3, 'PatlakFastRegMode', regression_type);
     if region_wise_computations
         LR_enh_pct=DCEFunc_Sig2Enh(LR_SI',1); %calc enhancement relative to first image
         LR_Ct_mM=DCEFunc_Enh2Conc_SPGR(...

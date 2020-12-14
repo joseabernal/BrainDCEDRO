@@ -85,5 +85,5 @@ HRes_mm = FOV_mm_True./NTrue;
 LRes_mm = FOV_mm_Acq./NAcq;
 
 % Input parameters
-HR_seg_fname = ['input', filesep, 'HR_tissue_map.nii.gz'];
-LR_seg_fname = ['input', filesep, 'LR_tissue_map.nii.gz'];
+HR_seg_fname = ['input', filesep, 'HR_tissue_map.nii'];
+LR_seg_fname = ['input', filesep, 'LR_tissue_map.nii'];
