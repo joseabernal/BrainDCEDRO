@@ -26,11 +26,7 @@ function W = createWindow3D(FoV_mm_HR, FoV_mm_LR, res_mm_HR, is_modified)
         W2 = no_filter(FoV_mm_HR(2), res_mm_HR(2));
     end
     
-    if is_modified(3)
-        W3 = butterworth(FoV_mm_HR(3), FoV_mm_LR(3), res_mm_HR(3));
-    else
-        W3 = no_filter(FoV_mm_HR(3), res_mm_HR(3));
-    end
+    W3 = no_filter(FoV_mm_HR(3), res_mm_HR(3));
 
     W = (W1.*W2').*reshape(W3, 1, 1, []);
 end
