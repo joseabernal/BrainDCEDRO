@@ -15,11 +15,15 @@ function registerSegmentationMap(output_folder, fname, NAcq, NumRegions, LRes_mm
     ref_fname = [output_folder, filesep, fname, '_mcf-0000.nii.gz'];
     
     system(['fslsplit ', output_folder, filesep, fname, '_mcf.nii.gz ', output_folder, filesep, fname, '_mcf-']);
+    
+    % find transformation matrix
     system(['flirt -dof 6 ', ...
         ' -in input/LR_t1w.nii', ...,
         ' -ref ', ref_fname, ...
         ' -omat ', trans_fname]);
     
+    % use transformation matrix to project each region of interest to the
+    % target space
     LR_tissue_map = zeros([NAcq, NumRegions]);
     for reg_idx=1:NumRegions
         reg_str = num2str(reg_idx);
