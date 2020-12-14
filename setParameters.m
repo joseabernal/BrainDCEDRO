@@ -72,7 +72,7 @@ T10_s     =   [0   4.22 0.99  1.20 1.27 1.34  nan  nan  nan  nan  nan  nan  1.46
 T2s0_s    =   [nan 1    1     1    1    1     1    1    1    1    1    1    1           1     1     1   1  ];
 PS_perMin =   [nan 0    2.75  3.91 7.25 3.85  nan  nan  nan  nan  nan  nan  0           3.85  nan   nan nan]*1E-4; %permeability
 vP=           [nan 0    0.57  0.72 1.05 1.20  nan  nan  nan  nan  nan  nan  (1-Hct)*100 1.20  nan   nan nan]*1E-2; %plasma volume fraction
-M0=           [nan 8520 10000 9400 10700 9298 nan  nan  nan  nan  nan  nan  8817        9298  nan   nan nan]; %equilibrium signal (~proton density)
+M0=           [nan 8520 9726 9402 9858 9298 nan  nan  nan  nan  nan  nan  8817        9298  nan   nan nan]; %equilibrium signal (~proton density)
 
 r1_perSpermM=4.2; %R1 relaxivity;
 r2_perSpermM=0; %ignore T2* effects for now, 6.7s-1mM-1 otherwise

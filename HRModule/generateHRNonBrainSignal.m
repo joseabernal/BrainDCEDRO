@@ -21,12 +21,24 @@
 function HR_SI_nonbrain = generateHRNonBrainSignal(HR_tissue_map, SI_nonbrain, NTrue, NFrame)
     HR_tissue_map = reshape(HR_tissue_map, [numel(HR_tissue_map), 1]);
 
+%   The tissue class number and its description are the following:
+%   7  - Meninges
+%   8  - Muscles and eyes
+%   9  - Mandible and vertebrae
+%   10 - Skull diploe
+%   11 - Skull outer table
+%   12 - Skull inner table
+%   15 - Skin
+%   16 - Adipose tissue
+%   17 - Eyes
+    seg_classes = [7, 8, 9, 10, 11, 12, 15, 16, 17];
+
     HR_SI_nonbrain = zeros([numel(HR_tissue_map), NFrame]);
     for seg_class_idx = 1:size(SI_nonbrain, 1)
-        seg_class = SI_nonbrain(seg_class_idx, 1);
+        seg_class = seg_classes(seg_class_idx);
 
         HR_SI_nonbrain(HR_tissue_map == seg_class, :) = ...
-            repmat(SI_nonbrain(seg_class_idx, 2:end), [sum(HR_tissue_map == seg_class), 1]);
+            repmat(SI_nonbrain(seg_class_idx, :), [sum(HR_tissue_map == seg_class), 1]);
     end
     
     HR_SI_nonbrain = reshape(HR_SI_nonbrain, [NTrue, NFrame]);

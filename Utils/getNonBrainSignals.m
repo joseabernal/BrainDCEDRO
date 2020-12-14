@@ -9,41 +9,36 @@
 %  Outputs:
 %   - SI: Signal-time curves of extra-cerebral regions. 2D matrix with signal
 %         profile for each non-brain structure. Each row corresponds to the
-%         tissue class number, followed by the mean intensity in each frame.
-%         The tissue class number and its description are the following:
-%          7  - Meninges
-%          8  - Muscles and eyes
-%          9  - Mandible and vertebrae
-%          10 - Skull diploe
-%          11 - Skull outer table
-%          12 - Skull inner table
-%          15 - Skin
-%          16 - Adipose tissue
-%          17 - Eyes
+%         the mean intensity in each frame.
 %
 % (c) Jose Bernal and Michael J. Thrippleton 2020
 
 function SI=getNonBrainSignals(t_s)  
-    SI = zeros(9, 1+length(t_s));
-    SI(:, 1) = [7, 8, 9, 10, 11, 12, 15, 16, 17]; % labels in seg map
-    SI(1, 2:end) = get_signal_in_meninges(t_s);
-    SI(2, 2:end) = get_signal_in_muscles(t_s);
-    SI(3, 2:end) = get_signal_in_mandible_and_vertebrae(t_s);
-    SI(4, 2:end) = get_signal_in_skull_diploe(t_s);
-    SI(5, 2:end) = get_signal_in_skull_outer_table(t_s);
-    SI(6, 2:end) = get_signal_in_skull_inner_table(t_s);
-    SI(7, 2:end) = get_signal_in_skin(t_s);
-    SI(8, 2:end) = get_signal_in_adipose_tissue(t_s);
-    SI(9, 2:end) = get_signal_in_eyes(t_s);
+    SI = zeros(9, length(t_s));
+    SI(1, :) = get_signal_in_meninges(t_s);
+    SI(2, :) = get_signal_in_muscles(t_s);
+    SI(3, :) = get_signal_in_mandible_and_vertebrae(t_s);
+    SI(4, :) = get_signal_in_skull_diploe(t_s);
+    SI(5, :) = get_signal_in_skull_outer_table(t_s);
+    SI(6, :) = get_signal_in_skull_inner_table(t_s);
+    SI(7, :) = get_signal_in_skin(t_s);
+    SI(8, :) = get_signal_in_adipose_tissue(t_s);
+    SI(9, :) = get_signal_in_eyes(t_s);
 end
 
 function SI = get_signal_in_meninges(t_s)
-    a = 269.2;
-    b = -0.002105;
-    c = 568.6;
-    d = 4.596e-05;
+    a = 568.6;
+    b = 4.596e-5;
+    c = 269.2;
+    d = -0.002105;
     
-    SI = a*exp(b*t_s)+c*exp(d*t_s);
+    p1 = 4.832;
+    p2 = 255;
+    
+    t_thres = 109.5;
+    
+    SI = (t_s<=t_thres) .* (p1*t_s+p2) + ...
+        (t_s>t_thres) .* (a*exp(b*t_s)+c*exp(d*t_s));
 end
 
 function SI = get_signal_in_muscles(t_s)
