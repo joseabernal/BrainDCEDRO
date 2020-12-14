@@ -37,7 +37,7 @@ function LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, 
         
         %% Add noise
         if apply_noise
-            LR_k_space_acquired(:, :, :, iFrame) = add_noise(LR_k_space_motion, SDnoise, NAcq);
+            LR_k_space_acquired(:, :, :, iFrame) = add_noise(LR_k_space_motion, SDnoise, NAcq, 1);
         else
             LR_k_space_acquired(:, :, :, iFrame) = LR_k_space_motion;
         end

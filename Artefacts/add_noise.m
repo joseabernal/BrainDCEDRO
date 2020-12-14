@@ -1,5 +1,5 @@
-%% Add Riccian noise to k-space
-%  Add Rician noise to input DCE-MRI k-space.
+%% Add noise to k-space
+%  Add noise to input DCE-MRI k-space.
 %  We represent the signal-to-noise ratio (SNR) as the quotient
 %  between the mean signal value and the standard deviation of the
 %  background noise. The SNR of the real scans should be similar to that of
@@ -26,9 +26,9 @@
 function k_space_noisy=add_noise(k_space, SDnoise, NAcq, NFrames)
     N_voxels = prod(NAcq);
 
-    SD = SDnoise/sqrt(2-pi/2) * 1/sqrt(2*N_voxels);
+    SD = SDnoise * 1/(sqrt(N_voxels)) * 1/sqrt(2-pi/2);
 
-    %% Generate Rician noise
+    %% Generate noise
     noise = normrnd(0, SD, [NAcq, NFrames]) + 1i*normrnd(0, SD, [NAcq, NFrames]);
     
     %% Add noise
