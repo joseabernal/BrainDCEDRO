@@ -21,4 +21,4 @@ output_folder = 'output';
 
 trans_matrix_pattern = ['input', filesep, 'TransformationMatrices', filesep, '%s.mat'];
 
-mcflirt_command = 'mcflirt -in %s -cost normmi -refvol 0';
+mcflirt_command = 'mcflirt -in %s -cost leastsquares -refvol 0';

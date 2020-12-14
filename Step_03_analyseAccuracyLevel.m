@@ -16,21 +16,14 @@ setParameters;
 
 output_folder = 'output';
 
-% generate low res segmentation map
-LR_tissue_map = generateLRSegMap(LR_seg_fname);
-
-% erode segmentation map
-if apply_erosion
-    LR_tissue_map = erode_seg_map(LR_tissue_map, erosion_extent, NumRegions);
-end
-
 % Results are stored in these two variables. The first, second, and third
 % dimensions correspond to the patient number, region of interest, and both
 % PS and vP.
 parameter_averaging_results = zeros(size(dataset, 1), NumRegions, 2);
 signal_averaging_results = zeros(size(dataset, 1), NumRegions, 2);
 for experiment_idx = 1:205
-    LR_SI_fname = [output_folder, filesep, 'LR_SI_', num2str(experiment_idx), '_mcf_tf.nii.gz'];
+    LR_SI_fname = [output_folder, filesep, 'LR_SI_', num2str(experiment_idx), '_mcf.nii.gz'];
+    LR_tissue_map_fname = [output_folder, filesep, 'LR_tissue_map_to_LR_SI_', num2str(experiment_idx), '.nii'];
 
     if ~exist(LR_SI_fname, 'file')
         continue
@@ -38,17 +31,34 @@ for experiment_idx = 1:205
     
     disp(experiment_idx)
     
+    % read corresponding low res segmentation map
+    LR_tissue_map = niftiread(LR_tissue_map_fname);
+
+    % erode segmentation map
+    if apply_erosion
+        LR_tissue_map = erode_seg_map(LR_tissue_map, erosion_extent, NumRegions);
+    end
+    
+    % create mask of regions of interest
+    roi = (LR_tissue_map > 2 & (LR_tissue_map < 7 | LR_tissue_map == 14));
+    
     % read low resolution (acquired) image data
     LR_SI = niftiread(LR_SI_fname);
 
     % mask low resolution to obtain signal of brain tissues only
-    LR_SI = LR_SI .* (LR_tissue_map > 1 & (LR_tissue_map < 7 | LR_tissue_map == 14));
+    LR_SI = LR_SI .* roi;
     
     % calculate PS and vp voxel-wise
     [LR_PS_perMin_voxel_wise, LR_vP_voxel_wise] = fitLRData(...
         LR_SI, Cp_AIF_mM, LR_tissue_map, T10_s, TR_s,TE_s, FA_deg, ...
         r1_perSpermM,r2_perSpermM, t_res_s, NAcq, false, regression_type);
 
+    % set to nan everything outside the regions of interest or with low
+    % signal
+    mask = prod(LR_SI > 100, 4);
+    LR_PS_perMin_voxel_wise(roi==0 | mask == 0) = nan;
+    LR_vP_voxel_wise(roi==0 | mask == 0) = nan;
+    
     % summarise PS and vP values per region of interest
     LR_PS_perMin_parameter_averaging = organiseParamsPerROI(...
         LR_PS_perMin_voxel_wise, LR_tissue_map, NumRegions);
