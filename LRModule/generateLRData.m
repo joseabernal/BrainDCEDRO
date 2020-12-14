@@ -44,11 +44,13 @@ function LR_SI = generateLRData(HR_SI, FOV_mm_True, NTrue, SDnoise, FOV_mm_Acq, 
         
         %% Apply low pass filter to reduce ringing artefacts
         if apply_lowpass
-            res_mm_Acq=FoV_mm_Acq./NAcq; %LR resolution
+            res_mm_Acq=FOV_mm_Acq./NAcq; %LR resolution
             k_FoV_perMM_LR=1./res_mm_Acq; %LR FoV in k-space
-            k_res_perMM_LR=1./FoV_mm_Acq; %LR resolution in k-space
+            k_res_perMM_LR=1./FOV_mm_Acq; %LR resolution in k-space
+            lpfilter = createBesselWindow3D(k_FoV_perMM_LR, k_res_perMM_LR);
 
-            LR_k_space_acquired = LR_k_space_acquired .* createBesselWindow3D(k_FoV_perMM_LR, k_res_perMM_LR);
+            LR_k_space_acquired(:, :, :, iFrame) = ...
+                LR_k_space_acquired(:, :, :, iFrame) .* lpfilter;
         end
     end
 
