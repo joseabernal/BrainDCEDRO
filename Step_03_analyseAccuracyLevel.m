@@ -22,17 +22,17 @@ output_folder = 'output';
 parameter_averaging_results = zeros(size(dataset, 1), NumRegions, 2);
 signal_averaging_results = zeros(size(dataset, 1), NumRegions, 2);
 for experiment_idx = 1:205
-    LR_SI_fname = [output_folder, filesep, 'LR_SI_', num2str(experiment_idx), '_mcf.nii.gz'];
-    LR_tissue_map_fname = [output_folder, filesep, 'LR_tissue_map_to_LR_SI_', num2str(experiment_idx), '.nii'];
+    LR_SI_fname = ['LR_SI_', num2str(experiment_idx)];
 
-    if ~exist(LR_SI_fname, 'file')
+    if ~exist([output_folder, filesep, LR_SI_fname, '_mcf.nii.gz'], 'file')
         continue
     end
     
     disp(experiment_idx)
-    
-    % read corresponding low res segmentation map
-    LR_tissue_map = niftiread(LR_tissue_map_fname);
+
+    % register segmentation map to input case
+    LR_tissue_map = registerSegmentationMap(...
+        output_folder, LR_SI_fname, NAcq, NumRegions, LRes_mm);
 
     % erode segmentation map
     if apply_erosion
@@ -43,7 +43,7 @@ for experiment_idx = 1:205
     roi = (LR_tissue_map > 2 & (LR_tissue_map < 7 | LR_tissue_map == 14));
     
     % read low resolution (acquired) image data
-    LR_SI = niftiread(LR_SI_fname);
+    LR_SI = niftiread([output_folder, filesep, LR_SI_fname, '_mcf.nii.gz']);
 
     % mask low resolution to obtain signal of brain tissues only
     LR_SI = LR_SI .* roi;

@@ -25,9 +25,9 @@ apply_gross_motion = 1; %flag indicating whether to apply gross motion
 apply_motion_artefacts = 1; %flag indicating whether to induce motion artefacts.
 % Of note, motion artefacts will only appear if apply_gross_motion = 1.
 
-apply_lowpass = 1; %flag indicating whether to apply a low pass filter or not
+apply_lowpass = 0; %flag indicating whether to apply a low pass filter or not
 apply_noise = 1; %flag indicating whether to add noise or not
-apply_erosion = 1; %flag indicating whether to erode seg masks or not
+apply_erosion = 0; %flag indicating whether to erode seg masks or not
 erosion_extent = 1; %radius in voxels of the erosion element (requires apply_erosion=1)
 regression_type = 'linear'; %either robust or linear
 

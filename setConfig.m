@@ -15,7 +15,7 @@ addpath('Utils');
 
 addpath(['Software', filesep, 'spm12']); % Download from https://www.fil.ion.ucl.ac.uk/spm/software/download/
 addpath(['Software', filesep, 'utilities']); % Provided
-addpath(['Software', filesep, 'DCE-functions']); % Download from https://github.com/mjt320/DCE-functions
+addpath(['Software', filesep, 'DCE-functions']); % Provided
 
 output_folder = 'output';
 

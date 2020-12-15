@@ -8,16 +8,19 @@
 %  - NumRegions: number of regions of interest
 %  - LRes_mm: low resolution [in mm]
 %
+%  Output:
+%  - Segmentation map registered to input case
+%
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
-function registerSegmentationMap(output_folder, fname, NAcq, NumRegions, LRes_mm)
+function LR_tissue_map = registerSegmentationMap(output_folder, fname, NAcq, NumRegions, LRes_mm)
     trans_fname = [output_folder, filesep, fname, '_mcf_tf.mat'];
     ref_fname = [output_folder, filesep, fname, '_mcf-0000.nii'];
     
     system(['fslsplit ', output_folder, filesep, fname, '_mcf.nii ', output_folder, filesep, fname, '_mcf-']);
     
     % find transformation matrix
-    system(['flirt -dof 6 ', ...
+    system(['flirt -dof 6 -cost leastsq -searchcost leastsq', ...
         ' -in input/LR_t1w.nii', ...,
         ' -ref ', ref_fname, ...
         ' -omat ', trans_fname]);
