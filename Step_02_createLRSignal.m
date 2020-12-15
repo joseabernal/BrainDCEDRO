@@ -19,7 +19,7 @@ rng(0, 'twister'); %for reproducibility
 HR_SI_fname = ['output', filesep, 'HR_SI_orig.nii'];
 
 % Create reference LR T1w scan
-if ~exist(HR_SI_fname, 'file')
+if exist(HR_SI_fname, 'file')
     HR_SI_orig = niftiread(HR_SI_fname);
     
     % Load 4D high resolution DCE-MRI signal
@@ -33,8 +33,7 @@ if ~exist(HR_SI_fname, 'file')
     clear HR_SI;
     
     % save low resolution signal
-    fname = 'LR_t1w';
-    save_scan({LR_SI}, {fname}, NAcq, 'input', LRes_mm);
+    save_scan({LR_SI}, {'LR_t1w'}, NAcq, 'input', LRes_mm);
 end
 
 for experiment_idx=1:205

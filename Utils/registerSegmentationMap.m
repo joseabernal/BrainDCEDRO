@@ -12,9 +12,9 @@
 
 function registerSegmentationMap(output_folder, fname, NAcq, NumRegions, LRes_mm)
     trans_fname = [output_folder, filesep, fname, '_mcf_tf.mat'];
-    ref_fname = [output_folder, filesep, fname, '_mcf-0000.nii.gz'];
+    ref_fname = [output_folder, filesep, fname, '_mcf-0000.nii'];
     
-    system(['fslsplit ', output_folder, filesep, fname, '_mcf.nii.gz ', output_folder, filesep, fname, '_mcf-']);
+    system(['fslsplit ', output_folder, filesep, fname, '_mcf.nii ', output_folder, filesep, fname, '_mcf-']);
     
     % find transformation matrix
     system(['flirt -dof 6 ', ...
