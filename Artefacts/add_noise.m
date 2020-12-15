@@ -8,9 +8,9 @@
 %  our simulations should be equal to (mu_sim*SD_real)/mu_real. First, we 
 %  estimated the standard deviation of the noise in real scans by computing 
 %  the mean signal within the normal-appearing white matter region and the
-%  standard deviation of the noise from background area. Second, we multiplied
-%  the estimated standard deviation by sqrt(2-pi/2). Third, we computed the
-%  standard deviation value for our simulations.
+%  standard deviation of the noise from background area. Second, we divide
+%  the estimated standard deviation by sqrt(2-pi/2) and by the square root
+%  of the number of points.
 %  
 %  Inputs:
 %  - k_space: Input k-space
