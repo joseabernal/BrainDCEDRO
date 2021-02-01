@@ -4,12 +4,12 @@
 %  
 % (c) Jose Bernal and Michael J. Thrippleton 2019
 
-%Imaging parameters - dimensions are AP (Freq Encoding), SI (Slice encoding), LR (Phase encoding)
+%Imaging parameters - dimensions are LR (Phase encoding), AP (Freq Encoding), SI (Slice encoding)
 FOV_mm_True=[240 240 240]; %Default FOV
 NTrue=[480 480 480]; %Dimension of image that defines the "true" object
 
-FOV_mm_Acq=[240, 184, 240]; %Acquired FoV
-MSSII_res_mm = [0.9375, 4, 1.25];%MSSII resolution
+FOV_mm_Acq=[240, 240, 184]; %Acquired FoV
+MSSII_res_mm = [1.25, 0.9375, 4];%MSSII resolution
 NAcq = floor(FOV_mm_Acq./MSSII_res_mm);%number of points acquired
 
 NFrames=21; %number of time frames, =21 for MSS2

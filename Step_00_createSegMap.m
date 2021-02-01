@@ -53,6 +53,8 @@ HR_tissue_map(WMH_segmap == 1 & HR_tissue_map ~= 2) = 4;
 HR_tissue_map(RSL_segmap == 1) = 5;
 
 HR_tissue_map = padarray(HR_tissue_map(:, 141:end, :), [0, 70, 65], 1, 'both');
+HR_tissue_map = permute(HR_tissue_map, [3, 1, 2]);
+HR_tissue_map = flip(HR_tissue_map, 2);
 
 % Save HR tissue map
 save_scan({uint16(HR_tissue_map)}, {'HR_tissue_map'}, NTrue, 'input', HRes_mm)

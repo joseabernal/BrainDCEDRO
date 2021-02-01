@@ -21,7 +21,7 @@ output_folder = 'output';
 % PS and vP.
 parameter_averaging_results = zeros(size(dataset, 1), NumRegions, 2);
 signal_averaging_results = zeros(size(dataset, 1), NumRegions, 2);
-for experiment_idx = 1:205
+for experiment_idx = 4
     LR_SI_fname = ['LR_SI_', num2str(experiment_idx)];
 
     if ~exist([output_folder, filesep, LR_SI_fname, '_mcf.nii.gz'], 'file')

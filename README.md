@@ -1,9 +1,9 @@
-# A novel digital reference object for DCE-MRI measurement of subtle blood-brain barrier leakage
+# A four-dimensional computational model of dynamic contrast-enhanced magnetic resonance imaging measurement of subtle blood-brain barrier leakage
 
-## Preprint available
-If you use our computational model in your research, please quote the preprint:
+## Publication available
+If you use our computational model in your research, please quote the following paper:
 
-> Bernal, J.; Valdés-Hernández, M.; Escudero, J.; Heye, A.; Sakka, E.; Armitage, P.; Makin, S.; Touyz, R.; Wardlaw, J.; Thrippleton, M. A Four-Dimensional Computational Model of Dynamic Contrast-Enhanced Magnetic Resonance Imaging Measurement of Subtle Blood-Brain Barrier Leakage. Preprints 2020, 2020100200 (doi: 10.20944/preprints202010.0200.v1).
+> Bernal, J.; Valdés-Hernández, M.; Escudero, J.; Heye, A.; Sakka, E.; Armitage, P.; Makin, S.; Touyz, R.; Wardlaw, J.; Thrippleton, M.  (2021). A four-dimensional computational model of dynamic contrast-enhanced magnetic resonance imaging measurement of subtle blood-brain barrier leakage. NeuroImage, 230, 117786. (https://doi.org/10.1016/j.neuroimage.2021.117786)
 
 ## Introduction
 Dynamic contrast-enhanced MRI (DCE-MRI) quantifies endothelial dysfunction but is prone to spatiotemporal distortions. In low-permeability scenarios, 1D simulations have shown that noise, scanner drift, and model assumptions hinder permeability estimation [1]. However, the impact of bulk motion and truncation and motion artefacts has been overlooked and cannot be evaluated in 1D. Moreover, imaging protocols are based on limited evidence due to protocol optimisation difficulties and lack of reference methods [2]. We propose a computational model based on real patient data for mimicking the DCE-MRI acquisition process in 4D to evaluate the aforementioned issues and better facilitate protocol optimisation and future testing. 
