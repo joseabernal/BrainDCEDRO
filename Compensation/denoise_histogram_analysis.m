@@ -35,16 +35,15 @@ function ROI_values = denoise_histogram_analysis(input, tissue_map, NumBins, Num
             noisy_count = [noisy_count, zeros(1, max(localNumBins-length(noisy_count),0))];
             
             for binId=1:localNumBins
-                disp(binId)
                 data_in_bin = data_in_ROI(bin==binId);
                 data_in_bin = sort(data_in_bin);
 
                 lower_bound = min(length(data_in_bin), noisy_count(binId));
 
-                filtered_data = [filtered_data, data_in_bin(lower_bound+1:end)];
+                filtered_data = [filtered_data; data_in_bin(lower_bound+1:end)];
             end
         end
 
-        ROI_values(region) = nanmedian(filtered_data);
+        ROI_values(region) = nanmean(filtered_data);
     end
 end

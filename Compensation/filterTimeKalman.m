@@ -6,13 +6,14 @@
 %  - t_res_s: temporal resolution [in s]
 %  - uses_acceleration: flag indicating whether to use a model with
 %  constant acceleration (1) or constant velocity (0)
+%  - NIgnore: number of frames to ignore during fitting
 
 %  Outputs:
 %   - SI_filt: filtered signal-time curves
 %
 % (c) Jose Bernal 2021
 
-function SI_filt = filterTimeKalman(SI, t_res_s, uses_acceleration)    
+function SI_filt = filterTimeKalman(SI, t_res_s, uses_acceleration, NIgnore)    
     dt = t_res_s/60;
     
     % Definition of model
@@ -28,21 +29,21 @@ function SI_filt = filterTimeKalman(SI, t_res_s, uses_acceleration)
         R = 1;
     end
     
-    func = @(row) apply_filter(A, Q, H, R, SI(row, :)');
+    func = @(row) apply_filter(A, Q, H, R, SI(row, :)', NIgnore);
     
     voxels = distributed(1:size(SI, 1));
 
     SI_filt = cell2mat(gather(arrayfun(func, voxels, 'UniformOutput', 0)))';
 end
 
-function filtered = apply_filter(A, Q, H, R, signal)
+function filtered = apply_filter(A, Q, H, R, signal, NIgnore)
     x = zeros(size(A, 1), 1);
     P = ones(size(A, 1), size(A, 1)) * 0.5;
     
-    x(1) = signal(3);
+    x(1) = signal(NIgnore);
 
     Mdl = ssm(A, Q, H, R, 'Mean0', x, 'Cov0', P, 'StateType', 2*ones(size(A, 1), 1));
     
-    [filtered, ~, ~] = smooth(Mdl, signal(3:end));
-    filtered = [signal(1:2); filtered(:, 1)];
+    [filtered, ~, ~] = smooth(Mdl, signal(NIgnore:end));
+    filtered = [signal(1:NIgnore-1); filtered(:, 1)];
 end

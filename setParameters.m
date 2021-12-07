@@ -11,6 +11,7 @@ NTrue=[480 480 480]; %Dimension of image that defines the "true" object
 FOV_mm_Acq=[240, 240, 184]; %Acquired FoV
 MSSII_res_mm = [1.25, 0.9375, 4];%MSSII resolution
 NAcq = floor(FOV_mm_Acq./MSSII_res_mm);%number of points acquired
+NIgnore = 3; % number of frames to ignore during fitting
 
 NFrames=21; %number of time frames, =21 for MSS2
 t_res_s=73; %temporal resolution
@@ -30,6 +31,13 @@ apply_noise = 1; %flag indicating whether to add noise or not
 apply_erosion = 0; %flag indicating whether to erode seg masks or not
 erosion_extent = 1; %radius in voxels of the erosion element (requires apply_erosion=1)
 regression_type = 'linear'; %either robust or linear
+apply_histogram_analysis = 0; %flag indicating whether to apply histogram analysis for denoising estimates
+NumBins = 1000; % number of bins for histogram analysis parameter denoising
+apply_kalman_filtering = 0; % flat indicating whether or not to use the Kalman filter
+use_acceleration_model = 1; % either 1 (assume constant acceleration) or 0 (assume constant velocity)
+apply_sg_filtering = 0; % flat indicating whether or not to use the SG filter
+sg_order = 2; % SG filter order
+sg_framelength = 17; % SG filter framelength
 
 % Noise extent
 % We represent the signal-to-noise ratio (SNR) as the quotient

@@ -3,6 +3,8 @@
 %  voxel-wise and region-wise strategies and explore ways to compensate for them.
 %  
 % (c) Jose Bernal and Michael J. Thrippleton 2019
+%
+%  Source code updated in 2021 by Jose Bernal
 
 clc;
 clear all;
@@ -21,7 +23,7 @@ output_folder = 'output';
 % PS and vP.
 parameter_averaging_results = zeros(size(dataset, 1), NumRegions, 2);
 signal_averaging_results = zeros(size(dataset, 1), NumRegions, 2);
-for experiment_idx = 4
+for experiment_idx = 1:205
     LR_SI_fname = ['LR_SI_', num2str(experiment_idx)];
 
     if ~exist([output_folder, filesep, LR_SI_fname, '_mcf.nii.gz'], 'file')
@@ -48,10 +50,25 @@ for experiment_idx = 4
     % mask low resolution to obtain signal of brain tissues only
     LR_SI = LR_SI .* roi;
     
+    % apply Kalman filtering
+    if apply_kalman_filtering || apply_sg_filtering
+        LR_SI_flat = reshape(LR_SI, [prod(NAcq), NFrames]);
+        
+        if apply_sg_filtering
+            LR_SI_flat(roi == 1, :) = filterSG(...
+                LR_SI_flat(roi == 1, :), sg_order, sg_framelength, NIgnore);
+        else
+            LR_SI_flat(roi == 1, :) = filterTimeKalman(...
+                LR_SI_flat(roi == 1, :), t_res_s, use_acceleration_model, NIgnore);
+        end
+        
+        LR_SI = reshape(LR_SI_flat, [NAcq, NFrames]);
+    end
+    
     % calculate PS and vp voxel-wise
     [LR_PS_perMin_voxel_wise, LR_vP_voxel_wise] = fitLRData(...
         LR_SI, Cp_AIF_mM, LR_tissue_map, T10_s, TR_s,TE_s, FA_deg, ...
-        r1_perSpermM,r2_perSpermM, t_res_s, NAcq, false, regression_type);
+        r1_perSpermM,r2_perSpermM, t_res_s, NAcq, false, regression_type, NIgnore);
 
     % set to nan everything outside the regions of interest or with low
     % signal
@@ -60,14 +77,22 @@ for experiment_idx = 4
     LR_vP_voxel_wise(roi==0 | mask == 0) = nan;
     
     % summarise PS and vP values per region of interest
-    LR_PS_perMin_parameter_averaging = organiseParamsPerROI(...
-        LR_PS_perMin_voxel_wise, LR_tissue_map, NumRegions);
-    LR_vP_dense_parameter_averaging = organiseParamsPerROI(...
-        LR_vP_voxel_wise, LR_tissue_map, NumRegions);
+    if apply_histogram_analysis
+        % apply histogram analysis
+        LR_PS_perMin_parameter_averaging = denoise_histogram_analysis(...
+            LR_PS_perMin_voxel_wise, LR_tissue_map(roi), NumBins, NumRegions);
+        LR_vP_parameter_averaging = denoise_histogram_analysis(...
+            LR_vP_voxel_wise, LR_tissue_map(roi), NumBins, NumRegions);
+    else
+        LR_PS_perMin_parameter_averaging = organiseParamsPerROI(...
+            LR_PS_perMin_voxel_wise, LR_tissue_map, NumRegions);
+        LR_vP_parameter_averaging = organiseParamsPerROI(...
+            LR_vP_voxel_wise, LR_tissue_map, NumRegions);
+    end
 
     % evaluate deviation using the parameter averaging approach
     parameter_averaging_results(experiment_idx, :, :) = evaluateDeviation(...
-        LR_PS_perMin_parameter_averaging, LR_vP_dense_parameter_averaging, PS_perMin, vP, NumRegions);
+        LR_PS_perMin_parameter_averaging, LR_vP_parameter_averaging, PS_perMin, vP, NumRegions);
     
     % save PS and vP maps
     save_scan({LR_PS_perMin_voxel_wise, LR_vP_voxel_wise}, ...
@@ -81,7 +106,7 @@ for experiment_idx = 4
     % calculate PS and vp region-wise
     [LR_PS_perMin_signal_averaging, LR_vP_signal_averaging] = fitLRData(...
         LR_SI_signal_averaging, Cp_AIF_mM, LR_tissue_map, T10_s, TR_s,TE_s, FA_deg, ...
-        r1_perSpermM,r2_perSpermM, t_res_s, NAcq, true, regression_type);    
+        r1_perSpermM,r2_perSpermM, t_res_s, NAcq, true, regression_type);
     
     % evaluate deviation using the signal averaging approach
     signal_averaging_results(experiment_idx, :, :) = evaluateDeviation(...
